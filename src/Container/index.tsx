@@ -38,10 +38,7 @@ class Container extends React.PureComponent<Props> {
 
   private readonly sizeRelatedInfoAction$ = new Subject<SizeRelatedInfo>();
 
-  private readonly sizeRelatedInfo$ = merge<
-    SizeRelatedInfo,
-    BarActionScanResult
-  >(
+  private readonly sizeRelatedInfo$ = merge(
     this.sizeRelatedInfoAction$,
     this.barActions$.pipe(
       scanBarAction({
@@ -86,11 +83,7 @@ class Container extends React.PureComponent<Props> {
   }
 
   private get containerProps(): StyledContainerProps {
-    return omit(this.props, [
-      'onActivate',
-      'beforeApplyResizer',
-      'afterResizing',
-    ]);
+    return omit(this.props, ['onActivate', 'beforeApplyResizer', 'afterResizing']);
   }
 
   componentDidMount() {
@@ -100,9 +93,7 @@ class Container extends React.PureComponent<Props> {
   render() {
     return (
       <ResizerContext.Provider value={this.contextValue}>
-        <StyledContainer {...this.containerProps}>
-          {this.props.children}
-        </StyledContainer>
+        <StyledContainer {...this.containerProps}>{this.props.children}</StyledContainer>
       </ResizerContext.Provider>
     );
   }
@@ -141,10 +132,7 @@ class Container extends React.PureComponent<Props> {
     return this.childrenProps.length - 1;
   };
 
-  private populateChildInstance = (
-    id: number,
-    ref: React.RefObject<HTMLElement>,
-  ) => {
+  private populateChildInstance = (id: number, ref: React.RefObject<HTMLElement>) => {
     if (ref.current) {
       this.childrenInstance[id] = ref.current;
     }
