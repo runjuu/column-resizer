@@ -1,4 +1,4 @@
-import { ResizerItem, ItemType } from './types';
+import { ResizerItem, ItemType, ResizerItemConfig } from './types';
 
 export function noop() {}
 
@@ -10,10 +10,7 @@ export function isValidType(type: string | null): type is ItemType {
   return !!type && type in ItemType;
 }
 
-export function parseResizerItems(
-  container: HTMLElement,
-  configMap: WeakMap<HTMLElement, ResizerItem['config']>,
-): ResizerItem[] {
+export function parseResizerItems(container: HTMLElement): ResizerItem[] {
   return Array.from(container.childNodes)
     .map((elm): ResizerItem | null => {
       if (!(elm instanceof HTMLElement)) return null;
@@ -21,16 +18,21 @@ export function parseResizerItems(
       const type = elm.getAttribute('data-item-type');
 
       if (isValidType(type)) {
-        return {
-          type,
-          elm,
-          config: configMap.get(elm) ?? {},
-        };
+        return { type, elm, config: parseConfig(elm) };
       } else {
         return null;
       }
     })
     .filter(<T>(item: T): item is Exclude<T, null> => !!item);
+
+  function parseConfig(elm: HTMLElement): ResizerItemConfig {
+    try {
+      const config = elm.getAttribute('data-item-config') ?? '';
+      return JSON.parse(config);
+    } catch {
+      return {};
+    }
+  }
 }
 
 export let DISABLE_PASSIVE: boolean | AddEventListenerOptions = true;

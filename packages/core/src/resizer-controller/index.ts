@@ -2,7 +2,7 @@ import { animationFrameScheduler, merge, Subject } from 'rxjs';
 import { filter, map, observeOn, share, tap } from 'rxjs/operators';
 
 import { BarAction, BarActionType, ResizerItem, SizeRelatedInfo } from '../types';
-import { noop, parseResizerItems } from '../utils';
+import { parseResizerItems } from '../utils';
 import { Resizer } from '../resizer';
 
 import { BarActionScanResult, scanBarAction } from './scan-bar-action';
@@ -23,7 +23,6 @@ export type ResizerControllerConfig = {
 type ResizerItems = ReadonlyArray<Readonly<ResizerItem>>;
 
 export class ResizerController {
-  private itemConfigMap = new WeakMap<HTMLElement, ResizerItem['config']>();
   private items: ResizerItems = [];
   private readonly barActions$ = new Subject<BarAction>();
   private readonly sizeRelatedInfoAction$ = new Subject<SizeRelatedInfo>();
@@ -33,18 +32,8 @@ export class ResizerController {
   refresh(container: HTMLElement | null) {
     if (!container) return;
 
-    this.items = parseResizerItems(container, this.itemConfigMap);
+    this.items = parseResizerItems(container);
     this.sizeRelatedInfoAction$.next(this.makeSizeInfos());
-  }
-
-  reportItemConfig(itemElm: HTMLElement | null, config: ResizerItem['config']) {
-    if (!itemElm) return noop;
-
-    this.itemConfigMap.set(itemElm, config);
-
-    return () => {
-      this.itemConfigMap.delete(itemElm);
-    };
   }
 
   triggerBarAction(elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) {

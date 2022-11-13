@@ -21,8 +21,6 @@ export class BarController {
   setup(container: HTMLElement | null) {
     if (!container) return noop;
 
-    const removeConfig = this.controller.reportItemConfig(container, this.config);
-
     const onMouseDown = this.triggerMouseAction(container, BarActionType.ACTIVATE);
     const onMouseMove = this.triggerMouseAction(container, BarActionType.MOVE);
     const onMouseUp = this.triggerMouseAction(container, BarActionType.DEACTIVATE);
@@ -42,8 +40,6 @@ export class BarController {
     document.addEventListener('touchcancel', onTouchCancel);
 
     return () => {
-      removeConfig();
-
       container.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);

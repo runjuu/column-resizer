@@ -31,7 +31,13 @@ export function Bar({
   );
 
   return (
-    <StyledBar data-item-type={ItemType.BAR} size={size} {...props} ref={ref}>
+    <StyledBar
+      data-item-type={ItemType.BAR}
+      data-item-config={JSON.stringify({ size })}
+      size={size}
+      {...props}
+      ref={ref}
+    >
       {children}
       <StyledInteractiveArea {...expandInteractiveArea} vertical={controller.config.vertical} />
     </StyledBar>

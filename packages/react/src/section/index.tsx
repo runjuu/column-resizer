@@ -45,6 +45,7 @@ export function Section({
     <div
       ref={ref}
       data-item-type={ItemType.SECTION}
+      data-item-config={JSON.stringify({ defaultSize, size, disableResponsive, minSize, maxSize })}
       {...props}
       style={{
         overflow: 'hidden',

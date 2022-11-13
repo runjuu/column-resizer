@@ -42,8 +42,6 @@ export class SectionController {
   setup(containerElm: HTMLElement | null, callback: (style: typeof this.style) => void) {
     if (!containerElm) return noop;
 
-    const removeConfig = this.controller.reportItemConfig(containerElm, this.config);
-
     const subscription = this.controller.sizeRelatedInfo$
       .pipe(
         map(({ sizeInfoArray, flexGrowRatio }) => ({
@@ -65,7 +63,6 @@ export class SectionController {
     callback(this.style);
 
     return () => {
-      removeConfig();
       subscription.unsubscribe();
     };
   }
