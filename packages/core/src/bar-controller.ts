@@ -4,6 +4,7 @@ import { DISABLE_PASSIVE, noop } from './utils';
 import { ResizerController } from './resizer-controller';
 
 export type BarControllerConfig = {
+  size: number;
   onClick?: () => void;
   onStatusChanged?: (isActive: boolean) => void;
 };
@@ -17,8 +18,10 @@ export class BarController {
     private readonly config: BarControllerConfig,
   ) {}
 
-  watchEvents(container: HTMLElement | null) {
+  setup(container: HTMLElement | null) {
     if (!container) return noop;
+
+    const removeConfig = this.controller.reportItemConfig(container, this.config);
 
     const onMouseDown = this.triggerMouseAction(container, BarActionType.ACTIVATE);
     const onMouseMove = this.triggerMouseAction(container, BarActionType.MOVE);
@@ -39,6 +42,8 @@ export class BarController {
     document.addEventListener('touchcancel', onTouchCancel);
 
     return () => {
+      removeConfig();
+
       container.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);

@@ -30,7 +30,9 @@ export class ResizerController {
 
   constructor(public readonly config: Readonly<ResizerControllerConfig>) {}
 
-  refresh(container: HTMLElement) {
+  refresh(container: HTMLElement | null) {
+    if (!container) return;
+
     this.items = parseResizerItems(container, this.itemConfigMap);
     this.sizeRelatedInfoAction$.next(this.makeSizeInfos());
   }

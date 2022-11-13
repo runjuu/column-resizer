@@ -2,15 +2,15 @@ import { BarController, BarControllerConfig, ItemType } from '@column-resizer/co
 import * as React from 'react';
 
 import { ChildProps, ExpandInteractiveArea } from '../types';
-import { ResizerControllerContext } from '../context';
 
 import { StyledBar, StyledInteractiveArea } from './styled';
+import { useResizerController, useForwardedRef } from '../hooks';
 
 type Props = React.HTMLAttributes<HTMLDivElement> &
-  Pick<ChildProps, 'innerRef'> &
   BarControllerConfig & {
     size: number;
     expandInteractiveArea?: ExpandInteractiveArea;
+    innerRef: ChildProps['innerRef'];
   };
 
 export function Bar({
@@ -22,18 +22,13 @@ export function Bar({
   size,
   ...props
 }: Props) {
-  const controller = React.useContext(ResizerControllerContext)!; // TODO: - handle null.
-  const ref = React.useRef<HTMLDivElement>(null);
-  const config = React.useMemo(() => ({ onClick, onStatusChanged }), [onClick, onStatusChanged]);
-  const barController = React.useMemo(
-    () => new BarController(controller, config),
-    [controller, config],
+  const controller = useResizerController();
+  const ref = useForwardedRef<HTMLDivElement | null>(null, innerRef);
+
+  React.useEffect(
+    () => new BarController(controller, { onClick, onStatusChanged, size }).setup(ref.current),
+    [controller, onClick, onStatusChanged, size, ref],
   );
-
-  React.useEffect(() => controller.reportItemConfig(ref.current, { size }), [controller, size]);
-  React.useEffect(() => barController.watchEvents(ref.current), [barController]);
-
-  React.useImperativeHandle(innerRef, () => ref.current!);
 
   return (
     <StyledBar data-item-type={ItemType.BAR} size={size} {...props} ref={ref}>

@@ -39,8 +39,10 @@ export class SectionController {
     private readonly config: SectionControllerConfig,
   ) {}
 
-  onStyleChange(containerElm: HTMLElement | null, callback: (style: typeof this.style) => void) {
+  setup(containerElm: HTMLElement | null, callback: (style: typeof this.style) => void) {
     if (!containerElm) return noop;
+
+    const removeConfig = this.controller.reportItemConfig(containerElm, this.config);
 
     const subscription = this.controller.sizeRelatedInfo$
       .pipe(
@@ -62,6 +64,9 @@ export class SectionController {
 
     callback(this.style);
 
-    return () => subscription.unsubscribe();
+    return () => {
+      removeConfig();
+      subscription.unsubscribe();
+    };
   }
 }

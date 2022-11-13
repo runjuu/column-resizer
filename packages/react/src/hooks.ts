@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MutableRefObject, Ref } from 'react';
 import { ResizerControllerContext } from './context';
 
 export const useIsomorphicLayoutEffect =
@@ -6,4 +6,15 @@ export const useIsomorphicLayoutEffect =
 
 export function useResizerController() {
   return React.useContext(ResizerControllerContext)!;
+}
+
+export function useForwardedRef<T>(
+  initialValue: T,
+  refToForward: Ref<T> | undefined,
+): MutableRefObject<T> {
+  const ref = React.useRef(initialValue);
+
+  React.useImperativeHandle(refToForward, () => ref.current!);
+
+  return ref;
 }
