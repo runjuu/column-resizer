@@ -5,183 +5,169 @@ import {
   ChildProps,
   Coordinate,
   ExpandInteractiveArea,
+  ResizerContextType,
 } from '../types';
-import { omit } from '../utils';
-import { withResizerContext } from '../context';
-import { StyledBar, StyledInteractiveArea, StyledBarProps } from './Bar.styled';
+import { ResizerContext } from '../context';
+import { StyledBar, StyledInteractiveArea } from './Bar.styled';
 import { disablePassive } from './disablePassive';
 
 type Props = React.HTMLAttributes<HTMLDivElement> &
-  Pick<ChildProps, 'context' | 'innerRef'> & {
+  Pick<ChildProps, 'innerRef'> & {
     size: number;
     onClick?: () => void;
     expandInteractiveArea?: ExpandInteractiveArea;
     onStatusChanged?: (isActive: boolean) => void;
   };
 
-class BarComponent extends React.PureComponent<Props> {
-  private readonly defaultInnerRef = React.createRef<HTMLDivElement>();
+export function Bar(props_: Props) {
+  const { children, onClick, innerRef, expandInteractiveArea, onStatusChanged, ...props } = props_;
+  const defaultInnerRef = React.useRef<HTMLDivElement>(null);
+  const ref = innerRef || defaultInnerRef;
+  const context = React.useContext(ResizerContext);
+  const [id] = React.useState(() => context.createID({ ...props_, context }));
+  const interactiveAreaRef = React.useRef<HTMLDivElement>(null);
 
-  private readonly interactiveAreaRef = React.createRef<HTMLDivElement>();
+  React.useLayoutEffect(() => {
+    context.populateInstance(id, ref);
+  }, [id, context, ref]);
 
-  private readonly id = this.props.context.createID(this.props);
+  useWatchEvents({
+    id,
+    context,
+    interactiveAreaRef,
+    onClickFromProps: onClick,
+    onStatusChangedFromProps: onStatusChanged,
+  });
 
-  private isValidClick: boolean = true;
-
-  private get ref() {
-    return this.props.innerRef || this.defaultInnerRef;
-  }
-
-  private get childProps(): StyledBarProps {
-    return omit(this.props, [
-      'context',
-      'innerRef',
-      'onClick',
-      'expandInteractiveArea',
-      'onStatusChanged',
-    ]);
-  }
-
-  private isActivated: boolean = false;
-
-  private onMouseDown = this.triggerMouseAction(BarActionType.ACTIVATE);
-  private onMouseMove = this.triggerMouseAction(BarActionType.MOVE);
-  private onMouseUp = this.triggerMouseAction(BarActionType.DEACTIVATE);
-
-  private onTouchStart = this.triggerTouchAction(BarActionType.ACTIVATE);
-  private onTouchMove = this.triggerTouchAction(BarActionType.MOVE);
-  private onTouchEnd = this.triggerTouchAction(BarActionType.DEACTIVATE);
-  private onTouchCancel = this.triggerTouchAction(BarActionType.DEACTIVATE);
-
-  componentDidMount() {
-    this.props.context.populateInstance(this.id, this.ref);
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
-    document.addEventListener('touchmove', this.onTouchMove, disablePassive);
-    document.addEventListener('touchend', this.onTouchEnd);
-    document.addEventListener('touchcancel', this.onTouchCancel);
-
-    if (this.interactiveAreaRef.current) {
-      this.interactiveAreaRef.current.addEventListener(
-        'mousedown',
-        this.onMouseDown,
-      );
-      this.interactiveAreaRef.current.addEventListener(
-        'touchstart',
-        this.onTouchStart,
-        disablePassive,
-      );
-    }
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('mouseup', this.onMouseUp);
-    document.removeEventListener('touchmove', this.onTouchMove);
-    document.removeEventListener('touchend', this.onTouchEnd);
-    document.removeEventListener('touchcancel', this.onTouchCancel);
-
-    if (this.interactiveAreaRef.current) {
-      this.interactiveAreaRef.current.removeEventListener(
-        'mousedown',
-        this.onMouseDown,
-      );
-      this.interactiveAreaRef.current.removeEventListener(
-        'touchstart',
-        this.onTouchStart,
-      );
-    }
-  }
-
-  render() {
-    return (
-      <StyledBar {...this.childProps} ref={this.ref}>
-        {this.props.children}
-        <StyledInteractiveArea
-          {...this.props.expandInteractiveArea}
-          ref={this.interactiveAreaRef}
-          vertical={this.props.context.vertical}
-        />
-      </StyledBar>
-    );
-  }
-
-  private onStatusChanged(isActivated: boolean) {
-    if (this.isActivated !== isActivated) {
-      this.isActivated = isActivated;
-
-      if (typeof this.props.onStatusChanged === 'function') {
-        this.props.onStatusChanged(isActivated);
-      }
-    }
-  }
-
-  private updateStatusIfNeed(type: BarActionType) {
-    if (type === BarActionType.ACTIVATE) {
-      this.onStatusChanged(true);
-    } else if (type === BarActionType.DEACTIVATE) {
-      this.onStatusChanged(false);
-    }
-  }
-
-  private triggerAction(type: BarActionType, coordinate: Coordinate) {
-    if (this.isActivated || type === BarActionType.ACTIVATE) {
-      this.props.context.triggerBarAction({ type, coordinate, barID: this.id });
-    }
-
-    if (this.isActivated && type === BarActionType.DEACTIVATE) {
-      // touch and click
-      this.onClick();
-    }
-
-    this.updateStatusIfNeed(type);
-    this.updateClickStatus(type);
-  }
-
-  private triggerMouseAction(type: BarActionType) {
-    return (event: React.MouseEvent | MouseEvent) => {
-      this.disableUserSelectIfResizing(event, type);
-      const { clientX: x, clientY: y } = event;
-      this.triggerAction(type, { x, y });
-    };
-  }
-
-  private triggerTouchAction(type: BarActionType) {
-    return (event: React.TouchEvent | TouchEvent) => {
-      this.disableUserSelectIfResizing(event, type);
-      const touch = event.touches[0] || { clientX: 0, clientY: 0 };
-      const { clientX: x, clientY: y } = touch;
-      this.triggerAction(type, { x, y });
-    };
-  }
-
-  private disableUserSelectIfResizing(
-    event: React.MouseEvent | MouseEvent | React.TouchEvent | TouchEvent,
-    type: BarActionType,
-  ) {
-    if (this.isActivated || type === BarActionType.ACTIVATE) {
-      event.preventDefault();
-    }
-  }
-
-  private updateClickStatus(type: BarActionType) {
-    if (this.isActivated) {
-      if (type === BarActionType.ACTIVATE) {
-        this.isValidClick = true;
-      } else if (type === BarActionType.MOVE) {
-        this.isValidClick = false;
-      }
-    }
-  }
-
-  private onClick() {
-    if (this.isValidClick && typeof this.props.onClick === 'function') {
-      this.isValidClick = false; // avoid trigger twice on mobile.
-      this.props.onClick();
-    }
-  }
+  return (
+    <StyledBar {...props} ref={ref}>
+      {children}
+      <StyledInteractiveArea
+        {...expandInteractiveArea}
+        ref={interactiveAreaRef}
+        vertical={context.vertical}
+      />
+    </StyledBar>
+  );
 }
 
-export type BarProps = Omit<Props, 'context'>;
+type WatchEventsParams = {
+  id: number;
+  context: ResizerContextType;
+  interactiveAreaRef: React.RefObject<HTMLElement>;
+  onClickFromProps: Props['onClick'];
+  onStatusChangedFromProps: Props['onStatusChanged'];
+};
 
-export const Bar = withResizerContext(BarComponent);
+function useWatchEvents({
+  id,
+  context,
+  interactiveAreaRef,
+  onClickFromProps,
+  onStatusChangedFromProps,
+}: WatchEventsParams) {
+  const isActivatedRef = React.useRef(false);
+  const isValidClickRef = React.useRef(true);
+
+  const updateStatusIfNeed = React.useCallback(
+    (type: BarActionType) => {
+      const onStatusChanged = (isActivated: boolean) => {
+        if (isActivatedRef.current !== isActivated) {
+          isActivatedRef.current = isActivated;
+          onStatusChangedFromProps?.(isActivated);
+        }
+      };
+
+      if (type === BarActionType.ACTIVATE) {
+        onStatusChanged(true);
+      } else if (type === BarActionType.DEACTIVATE) {
+        onStatusChanged(false);
+      }
+    },
+    [isActivatedRef, onStatusChangedFromProps],
+  );
+
+  const updateClickStatus = React.useCallback(
+    (type: BarActionType) => {
+      if (isActivatedRef.current) {
+        if (type === BarActionType.ACTIVATE) {
+          isValidClickRef.current = true;
+        } else if (type === BarActionType.MOVE) {
+          isValidClickRef.current = false;
+        }
+      }
+    },
+    [isActivatedRef],
+  );
+
+  React.useEffect(() => {
+    const onMouseDown = triggerMouseAction(BarActionType.ACTIVATE);
+    const onMouseMove = triggerMouseAction(BarActionType.MOVE);
+    const onMouseUp = triggerMouseAction(BarActionType.DEACTIVATE);
+
+    const onTouchStart = triggerTouchAction(BarActionType.ACTIVATE);
+    const onTouchMove = triggerTouchAction(BarActionType.MOVE);
+    const onTouchEnd = triggerTouchAction(BarActionType.DEACTIVATE);
+    const onTouchCancel = triggerTouchAction(BarActionType.DEACTIVATE);
+
+    interactiveAreaRef.current?.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    interactiveAreaRef.current?.addEventListener('touchstart', onTouchStart, disablePassive);
+    document.addEventListener('touchmove', onTouchMove, disablePassive);
+    document.addEventListener('touchend', onTouchEnd);
+    document.addEventListener('touchcancel', onTouchCancel);
+
+    return () => {
+      interactiveAreaRef.current?.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      interactiveAreaRef.current?.removeEventListener('touchstart', onTouchStart);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onTouchEnd);
+      document.removeEventListener('touchcancel', onTouchCancel);
+    };
+
+    function disableUserSelectIfResizing(
+      event: React.MouseEvent | MouseEvent | React.TouchEvent | TouchEvent,
+      type: BarActionType,
+    ) {
+      if (isActivatedRef.current || type === BarActionType.ACTIVATE) {
+        event.preventDefault();
+      }
+    }
+
+    function triggerAction(type: BarActionType, coordinate: Coordinate) {
+      if (isActivatedRef.current || type === BarActionType.ACTIVATE) {
+        context.triggerBarAction({ type, coordinate, barID: id });
+      }
+
+      if (isActivatedRef.current && isValidClickRef.current && type === BarActionType.DEACTIVATE) {
+        isValidClickRef.current = false; // avoid trigger twice on mobile.
+        // touch and click
+        onClickFromProps?.();
+      }
+
+      updateStatusIfNeed(type);
+      updateClickStatus(type);
+    }
+
+    function triggerMouseAction(type: BarActionType) {
+      return (event: React.MouseEvent | MouseEvent) => {
+        disableUserSelectIfResizing(event, type);
+        const { clientX: x, clientY: y } = event;
+        triggerAction(type, { x, y });
+      };
+    }
+
+    function triggerTouchAction(type: BarActionType) {
+      return (event: React.TouchEvent | TouchEvent) => {
+        disableUserSelectIfResizing(event, type);
+        const touch = event.touches[0] || { clientX: 0, clientY: 0 };
+        const { clientX: x, clientY: y } = touch;
+        triggerAction(type, { x, y });
+      };
+    }
+  }, [id, context, interactiveAreaRef, onClickFromProps, isActivatedRef, updateStatusIfNeed]);
+}
