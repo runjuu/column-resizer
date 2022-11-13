@@ -6,11 +6,11 @@ import {
   BarAction,
   BarActionType,
   ChildProps,
-  ResizerContext,
+  ResizerContextType,
   SizeRelatedInfo,
 } from '../types';
 import { omit } from '../utils';
-import { ResizerProvider } from '../context';
+import { ResizerContext } from '../context';
 
 import { Resizer } from './Resizer';
 import { BarActionScanResult, scanBarAction } from './operators';
@@ -75,7 +75,7 @@ class Container extends React.PureComponent<Props> {
     return this.props.vertical ? 'height' : 'width';
   }
 
-  private get contextValue(): ResizerContext {
+  private get contextValue(): ResizerContextType {
     return {
       vertical: !!this.props.vertical,
       sizeRelatedInfo$: this.sizeRelatedInfo$,
@@ -99,11 +99,11 @@ class Container extends React.PureComponent<Props> {
 
   render() {
     return (
-      <ResizerProvider value={this.contextValue}>
+      <ResizerContext.Provider value={this.contextValue}>
         <StyledContainer {...this.containerProps}>
           {this.props.children}
         </StyledContainer>
-      </ResizerProvider>
+      </ResizerContext.Provider>
     );
   }
 

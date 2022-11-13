@@ -39,12 +39,12 @@ export interface ChildProps {
   defaultSize?: number;
   maxSize?: number;
   minSize?: number;
-  context: ResizerContext;
+  context: ResizerContextType;
   disableResponsive?: boolean;
   innerRef?: RefObject<HTMLDivElement>;
 }
 
-export interface ResizerContext {
+export interface ResizerContextType {
   vertical: boolean;
   createID: (props: ChildProps) => number;
   populateInstance: (id: number, ref: RefObject<HTMLElement>) => void;

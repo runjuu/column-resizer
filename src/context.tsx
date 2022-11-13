@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { EMPTY } from 'rxjs';
 
-import { ChildProps, ResizerContext } from './types';
+import { ChildProps, ResizerContextType } from './types';
 import { noop } from './utils';
 
-export const {
-  Provider: ResizerProvider,
-  Consumer: ResizerConsumer,
-} = React.createContext<ResizerContext>({
+export const ResizerContext = React.createContext<ResizerContextType>({
   createID: () => -1,
   populateInstance: noop,
   triggerBarAction: noop,
@@ -15,15 +12,10 @@ export const {
   sizeRelatedInfo$: EMPTY,
 });
 
-export function withResizerContext<T extends ChildProps>(
-  Target: React.ComponentType<T>,
-) {
-  return (props: Omit<T, 'context'>) => (
-    <ResizerConsumer>
-      {(context) => {
-        const finalProps = { ...props, context } as T;
-        return <Target {...finalProps} />;
-      }}
-    </ResizerConsumer>
-  );
-}
+export const withResizerContext =
+  <T extends ChildProps>(Target: React.ComponentType<T>) =>
+  (props: Omit<T, 'context'>) => {
+    const context = React.useContext(ResizerContext);
+    const propsWithContext = { ...props, context } as T;
+    return <Target {...propsWithContext} />;
+  };
