@@ -2,6 +2,8 @@ import { BarID, SectionID, ResizerItem } from './types';
 
 const idRegex = /^SR_(BAR|SECTION)_(\d+)$/;
 
+export function noop() {}
+
 export function isValidNumber(num?: number): num is number {
   return typeof num === 'number' && num === num;
 }
