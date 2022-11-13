@@ -1,130 +1,90 @@
 import * as React from 'react';
-import { Subscription } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
 import { ChildProps, SizeInfo } from '../types';
-import { withResizerContext } from '../context';
-import { isValidNumber, omit } from '../utils';
-import { StyledSection, StyledSectionProps } from './Section.styled';
+import { ResizerContext } from '../context';
+import { isValidNumber } from '../utils';
+import { StyledSection } from './Section.styled';
 
-type Props = ChildProps &
+export type SectionProps = Omit<ChildProps, 'context'> &
   React.HTMLAttributes<HTMLDivElement> & {
     onSizeChanged?: (currentSize: number) => void;
   };
 
-class SectionComponent extends React.PureComponent<Props> {
-  private readonly defaultInnerRef = React.createRef<HTMLDivElement>();
+export function Section(props_: SectionProps) {
+  const { defaultSize, size, disableResponsive, innerRef, onSizeChanged, ...props } = props_;
+  const defaultInnerRef = React.useRef<HTMLDivElement>(null);
+  const ref = innerRef || defaultInnerRef;
+  const context = React.useContext(ResizerContext);
+  const [id] = React.useState(() => context.createID({ ...props_, context }));
 
-  private readonly id = this.props.context.createID(this.props);
+  React.useLayoutEffect(() => {
+    context.populateInstance(id, ref);
+  }, [id, context, ref]);
 
-  private readonly subscription = new Subscription();
+  const sizeInfoRef = React.useRef<SizeInfo | null>(null);
+  const flexGrowRatioRef = React.useRef(0);
 
-  private sizeInfo?: SizeInfo;
+  const getStyle = React.useCallback(
+    (sizeInfo = sizeInfoRef.current, flexGrowRatio = flexGrowRatioRef.current) => {
+      const flexShrink = getFlexShrink();
 
-  private flexGrowRatio: number = 0;
+      if (sizeInfo) {
+        const { disableResponsive, currentSize } = sizeInfo;
 
-  private resize$ = this.props.context.sizeRelatedInfo$.pipe(
-    map(({ sizeInfoArray, flexGrowRatio }) => ({
-      sizeInfo: sizeInfoArray[this.id],
-      flexGrowRatio,
-    })),
-    filter(({ sizeInfo }) => !!sizeInfo),
-    tap(({ sizeInfo, flexGrowRatio }) => {
-      this.sizeInfo = sizeInfo;
-      this.flexGrowRatio = flexGrowRatio;
-      if (this.ref.current) {
-        const { flexGrow, flexShrink, flexBasis } = this.getStyle(
-          sizeInfo,
-          flexGrowRatio,
-        );
-
-        this.ref.current.style.flexGrow = `${flexGrow}`;
-        this.ref.current.style.flexShrink = `${flexShrink}`;
-        this.ref.current.style.flexBasis = `${flexBasis}px`;
-
-        this.onSizeChanged(sizeInfo.currentSize);
-      }
-    }),
-  );
-
-  private get ref() {
-    return this.props.innerRef || this.defaultInnerRef;
-  }
-
-  private get childProps(): StyledSectionProps {
-    return {
-      ...omit(this.props, [
-        'defaultSize',
-        'size',
-        'disableResponsive',
-        'innerRef',
-        'onSizeChanged',
-      ]),
-      ...this.getStyle(),
-    };
-  }
-
-  componentDidMount() {
-    this.subscription.add(this.resize$.subscribe());
-    this.props.context.populateInstance(this.id, this.ref);
-  }
-
-  componentWillUnmount(): void {
-    this.subscription.unsubscribe();
-  }
-
-  render() {
-    return <StyledSection {...this.childProps} ref={this.ref} />;
-  }
-
-  private onSizeChanged(currentSize: number) {
-    if (typeof this.props.onSizeChanged === 'function') {
-      this.props.onSizeChanged(currentSize);
-    }
-  }
-
-  private getFlexShrink() {
-    if (isValidNumber(this.props.size)) {
-      return 0;
-    } else {
-      return this.props.disableResponsive ? 1 : 0;
-    }
-  }
-
-  private getStyle(
-    sizeInfo: SizeInfo | undefined = this.sizeInfo,
-    flexGrowRatio: number = this.flexGrowRatio,
-  ) {
-    const flexShrink = this.getFlexShrink();
-
-    if (sizeInfo) {
-      const { disableResponsive, currentSize } = sizeInfo;
-
-      return {
-        flexShrink,
-        flexGrow: disableResponsive ? 0 : flexGrowRatio * currentSize,
-        flexBasis: disableResponsive ? currentSize : 0,
-      };
-    } else {
-      const size = this.props.size || this.props.defaultSize;
-
-      if (isValidNumber(size)) {
         return {
           flexShrink,
-          flexGrow: 0,
-          flexBasis: size,
+          flexGrow: disableResponsive ? 0 : flexGrowRatio * currentSize,
+          flexBasis: disableResponsive ? currentSize : 0,
         };
       } else {
-        return {
-          flexShrink,
-          flexGrow: 1,
-          flexBasis: 0,
-        };
+        const s = size || defaultSize;
+
+        if (isValidNumber(s)) {
+          return { flexShrink, flexGrow: 0, flexBasis: s };
+        } else {
+          return { flexShrink, flexGrow: 1, flexBasis: 0 };
+        }
       }
-    }
-  }
+
+      function getFlexShrink() {
+        if (isValidNumber(size)) {
+          return 0;
+        } else {
+          return disableResponsive ? 1 : 0;
+        }
+      }
+    },
+    [sizeInfoRef, flexGrowRatioRef, size, disableResponsive],
+  );
+
+  React.useEffect(() => {
+    const subscription = context.sizeRelatedInfo$
+      .pipe(
+        map(({ sizeInfoArray, flexGrowRatio }) => ({
+          sizeInfo: sizeInfoArray[id],
+          flexGrowRatio,
+        })),
+        filter(({ sizeInfo }) => !!sizeInfo),
+        tap(({ sizeInfo, flexGrowRatio }) => {
+          sizeInfoRef.current = sizeInfo;
+          flexGrowRatioRef.current = flexGrowRatio;
+
+          if (ref.current) {
+            const { flexGrow, flexShrink, flexBasis } = getStyle(sizeInfo, flexGrowRatio);
+
+            ref.current.style.flexGrow = `${flexGrow}`;
+            ref.current.style.flexShrink = `${flexShrink}`;
+            ref.current.style.flexBasis = `${flexBasis}px`;
+
+            onSizeChanged?.(sizeInfo.currentSize);
+          }
+        }),
+      )
+      .subscribe();
+
+    return () => subscription.unsubscribe();
+  }, [context, id, ref, sizeInfoRef, flexGrowRatioRef, onSizeChanged, getStyle]);
+
+  return <StyledSection {...props} {...getStyle()} context={context} ref={ref} />;
 }
-
-export type SectionProps = Pick<Props, 'context'>;
-
-export const Section = withResizerContext(SectionComponent);
