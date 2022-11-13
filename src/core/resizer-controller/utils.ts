@@ -1,5 +1,5 @@
-import { ChildProps, Coordinate, SizeInfo, SizeRelatedInfo, Trend } from '../types';
-import { isValidNumber } from '../utils';
+import { ChildProps, Coordinate, SizeInfo, SizeRelatedInfo, Trend } from '../../types';
+import { isValidNumber } from '../../utils';
 
 export const DEFAULT_COORDINATE_OFFSET: Coordinate = { x: 0, y: 0 };
 

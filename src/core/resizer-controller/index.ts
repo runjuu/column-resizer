@@ -1,17 +1,18 @@
 import { animationFrameScheduler, merge, Subject } from 'rxjs';
 import { filter, map, observeOn, share, tap } from 'rxjs/operators';
 
-import { BarAction, BarActionType, BarID, ResizerItem, SizeRelatedInfo } from '../types';
+import { BarAction, BarActionType, BarID, ResizerItem, SizeRelatedInfo } from '../../types';
+import { parseResizerItems } from '../../utils';
 
-import { Resizer } from './resizer';
-import { BarActionScanResult, scanBarAction } from './operators';
+import { Resizer } from '../resizer';
+
+import { BarActionScanResult, scanBarAction } from './scan-bar-action';
 import {
   calculateCoordinateOffset,
   collectSizeRelatedInfo,
   isDisabledResponsive,
   isSolid,
 } from './utils';
-import { parseResizerItems } from '../utils';
 
 export type ResizerControllerConfig = {
   vertical: boolean;

@@ -1,6 +1,7 @@
 import { SizeRelatedInfo } from '../types';
-import { BarActionScanResult } from './operators';
-import { getNextSizeRelatedInfo } from './utils';
+
+import { BarActionScanResult } from './resizer-controller/scan-bar-action';
+import { getNextSizeRelatedInfo } from './resizer-controller/utils';
 
 type ResizeResult = SizeRelatedInfo | BarActionScanResult;
 
