@@ -1,29 +1,45 @@
 import * as React from 'react';
-import { filter, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { ChildProps, SizeInfo } from '../types';
-import { ResizerContext } from '../context';
-import { isValidNumber } from '../utils';
-import { StyledSection } from './Section.styled';
+import { ResizerControllerContext } from '../context';
+import { generateId, isValidNumber } from '../utils';
+import { StyledSection } from './styled';
 
 export type SectionProps = Omit<ChildProps, 'context'> &
   React.HTMLAttributes<HTMLDivElement> & {
     onSizeChanged?: (currentSize: number) => void;
   };
 
-export function Section(props_: SectionProps) {
-  const { defaultSize, size, disableResponsive, innerRef, onSizeChanged, ...props } = props_;
+export function Section({
+  defaultSize,
+  size,
+  disableResponsive,
+  minSize,
+  maxSize,
+  innerRef,
+  onSizeChanged,
+  ...props
+}: SectionProps) {
   const defaultInnerRef = React.useRef<HTMLDivElement>(null);
   const ref = innerRef || defaultInnerRef;
-  const context = React.useContext(ResizerContext);
-  const [id] = React.useState(() => context.createID({ ...props_, context }));
-
-  React.useLayoutEffect(() => {
-    context.populateInstance(id, ref);
-  }, [id, context, ref]);
+  const controller = React.useContext(ResizerControllerContext)!; // TODO: - handle null;
+  const sectionID = React.useMemo(() => generateId('SECTION'), []);
 
   const sizeInfoRef = React.useRef<SizeInfo | null>(null);
   const flexGrowRatioRef = React.useRef(0);
+
+  React.useEffect(
+    () =>
+      controller.reportItemConfig(sectionID, {
+        defaultSize,
+        size,
+        disableResponsive,
+        minSize,
+        maxSize,
+      }),
+    [controller, sectionID, defaultSize, size, disableResponsive, minSize, maxSize],
+  );
 
   const getStyle = React.useCallback(
     (sizeInfo = sizeInfoRef.current, flexGrowRatio = flexGrowRatioRef.current) => {
@@ -59,14 +75,15 @@ export function Section(props_: SectionProps) {
   );
 
   React.useEffect(() => {
-    const subscription = context.sizeRelatedInfo$
+    const subscription = controller.sizeRelatedInfo$
       .pipe(
         map(({ sizeInfoArray, flexGrowRatio }) => ({
-          sizeInfo: sizeInfoArray[id],
+          sizeInfo: sizeInfoArray.find(({ id }) => id === sectionID),
           flexGrowRatio,
         })),
-        filter(({ sizeInfo }) => !!sizeInfo),
         tap(({ sizeInfo, flexGrowRatio }) => {
+          if (!sizeInfo) return;
+
           sizeInfoRef.current = sizeInfo;
           flexGrowRatioRef.current = flexGrowRatio;
 
@@ -84,7 +101,15 @@ export function Section(props_: SectionProps) {
       .subscribe();
 
     return () => subscription.unsubscribe();
-  }, [context, id, ref, sizeInfoRef, flexGrowRatioRef, onSizeChanged, getStyle]);
+  }, [controller, sectionID, ref, sizeInfoRef, flexGrowRatioRef, onSizeChanged, getStyle]);
 
-  return <StyledSection {...props} {...getStyle()} context={context} ref={ref} />;
+  return (
+    <StyledSection
+      data-id={sectionID}
+      {...props}
+      {...getStyle()}
+      vertical={controller.config.vertical}
+      ref={ref}
+    />
+  );
 }

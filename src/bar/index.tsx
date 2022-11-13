@@ -1,15 +1,11 @@
 import * as React from 'react';
 
-import {
-  BarActionType,
-  ChildProps,
-  Coordinate,
-  ExpandInteractiveArea,
-  ResizerContextType,
-} from '../types';
-import { ResizerContext } from '../context';
-import { StyledBar, StyledInteractiveArea } from './Bar.styled';
-import { disablePassive } from './disablePassive';
+import { BarActionType, BarID, ChildProps, Coordinate, ExpandInteractiveArea } from '../types';
+import { ResizerControllerContext } from '../context';
+import { ResizerController } from '../core';
+import { generateId, DISABLE_PASSIVE } from '../utils';
+
+import { StyledBar, StyledInteractiveArea } from './styled';
 
 type Props = React.HTMLAttributes<HTMLDivElement> &
   Pick<ChildProps, 'innerRef'> & {
@@ -19,49 +15,54 @@ type Props = React.HTMLAttributes<HTMLDivElement> &
     onStatusChanged?: (isActive: boolean) => void;
   };
 
-export function Bar(props_: Props) {
-  const { children, onClick, innerRef, expandInteractiveArea, onStatusChanged, ...props } = props_;
+export function Bar({
+  children,
+  onClick,
+  innerRef,
+  expandInteractiveArea,
+  onStatusChanged,
+  size,
+  ...props
+}: Props) {
   const defaultInnerRef = React.useRef<HTMLDivElement>(null);
   const ref = innerRef || defaultInnerRef;
-  const context = React.useContext(ResizerContext);
-  const [id] = React.useState(() => context.createID({ ...props_, context }));
+  const controller = React.useContext(ResizerControllerContext)!; // TODO: - handle null.
   const interactiveAreaRef = React.useRef<HTMLDivElement>(null);
+  const barID = React.useMemo(() => generateId('BAR'), []);
 
-  React.useLayoutEffect(() => {
-    context.populateInstance(id, ref);
-  }, [id, context, ref]);
+  React.useEffect(() => controller.reportItemConfig(barID, { size }), [controller, size]);
 
   useWatchEvents({
-    id,
-    context,
+    barID,
+    controller,
     interactiveAreaRef,
     onClickFromProps: onClick,
     onStatusChangedFromProps: onStatusChanged,
   });
 
   return (
-    <StyledBar {...props} ref={ref}>
+    <StyledBar data-id={barID} size={size} {...props} ref={ref}>
       {children}
       <StyledInteractiveArea
         {...expandInteractiveArea}
         ref={interactiveAreaRef}
-        vertical={context.vertical}
+        vertical={controller.config.vertical}
       />
     </StyledBar>
   );
 }
 
 type WatchEventsParams = {
-  id: number;
-  context: ResizerContextType;
+  barID: BarID;
+  controller: ResizerController;
   interactiveAreaRef: React.RefObject<HTMLElement>;
   onClickFromProps: Props['onClick'];
   onStatusChangedFromProps: Props['onStatusChanged'];
 };
 
 function useWatchEvents({
-  id,
-  context,
+  barID,
+  controller,
   interactiveAreaRef,
   onClickFromProps,
   onStatusChangedFromProps,
@@ -114,8 +115,8 @@ function useWatchEvents({
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
-    interactiveAreaRef.current?.addEventListener('touchstart', onTouchStart, disablePassive);
-    document.addEventListener('touchmove', onTouchMove, disablePassive);
+    interactiveAreaRef.current?.addEventListener('touchstart', onTouchStart, DISABLE_PASSIVE);
+    document.addEventListener('touchmove', onTouchMove, DISABLE_PASSIVE);
     document.addEventListener('touchend', onTouchEnd);
     document.addEventListener('touchcancel', onTouchCancel);
 
@@ -140,7 +141,7 @@ function useWatchEvents({
 
     function triggerAction(type: BarActionType, coordinate: Coordinate) {
       if (isActivatedRef.current || type === BarActionType.ACTIVATE) {
-        context.triggerBarAction({ type, coordinate, barID: id });
+        controller.triggerBarAction(barID, { type, coordinate });
       }
 
       if (isActivatedRef.current && isValidClickRef.current && type === BarActionType.DEACTIVATE) {
@@ -169,5 +170,5 @@ function useWatchEvents({
         triggerAction(type, { x, y });
       };
     }
-  }, [id, context, interactiveAreaRef, onClickFromProps, isActivatedRef, updateStatusIfNeed]);
+  }, [barID, controller, interactiveAreaRef, onClickFromProps, isActivatedRef, updateStatusIfNeed]);
 }

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ExpandInteractiveArea } from '../types';
 
 export type StyledBarProps = React.HTMLAttributes<HTMLDivElement> & {
-  size?: number;
+  size: number;
 };
 
 export const StyledBar = React.forwardRef<HTMLDivElement, StyledBarProps>(
@@ -25,14 +25,8 @@ export type StyledInteractiveAreaProps = React.HTMLAttributes<HTMLDivElement> &
     vertical: boolean;
   };
 
-export const StyledInteractiveArea = React.forwardRef<
-  HTMLDivElement,
-  StyledInteractiveAreaProps
->(
-  (
-    { top = 0, right = 0, bottom = 0, left = 0, vertical, style, ...props },
-    ref,
-  ) => (
+export const StyledInteractiveArea = React.forwardRef<HTMLDivElement, StyledInteractiveAreaProps>(
+  ({ top = 0, right = 0, bottom = 0, left = 0, vertical, style, ...props }, ref) => (
     <div
       {...props}
       style={{

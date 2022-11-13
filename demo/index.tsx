@@ -13,16 +13,18 @@ import {
 } from './sections';
 
 createRoot(document.getElementById('app')!).render(
-  <main>
-    <h1>Default Behavior</h1>
-    <Simple />
-    <DefaultSize />
-    <ResponsiveSize />
-    <MaxMinSize />
-    <FixedSize />
-    <NestingDemo />
-    <h1>Custom Behavior</h1>
-    <CollapsibleSection />
-    <InteractiveSection />
-  </main>,
+  <React.StrictMode>
+    <main>
+      <h1>Default Behavior</h1>
+      <Simple />
+      <DefaultSize />
+      <ResponsiveSize />
+      <MaxMinSize />
+      <FixedSize />
+      <NestingDemo />
+      <h1>Custom Behavior</h1>
+      <CollapsibleSection />
+      <InteractiveSection />
+    </main>
+  </React.StrictMode>,
 );

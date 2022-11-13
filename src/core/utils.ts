@@ -1,10 +1,4 @@
-import {
-  ChildProps,
-  Coordinate,
-  SizeInfo,
-  SizeRelatedInfo,
-  Trend,
-} from '../types';
+import { ChildProps, Coordinate, SizeInfo, SizeRelatedInfo, Trend } from '../types';
 import { isValidNumber } from '../utils';
 
 export const DEFAULT_COORDINATE_OFFSET: Coordinate = { x: 0, y: 0 };
@@ -96,10 +90,7 @@ function doResize(
     };
   }
 
-  const { nextSize, remainingOffset } = filterSize(
-    sizeInfo.currentSize + offset,
-    sizeInfo,
-  );
+  const { nextSize, remainingOffset } = filterSize(sizeInfo.currentSize + offset, sizeInfo);
 
   return {
     sizeInfo: { ...sizeInfo, currentSize: nextSize },
@@ -108,7 +99,7 @@ function doResize(
 }
 
 function resize(
-  barID: number,
+  barIndex: number,
   offset: number,
   trend: Trend,
   sizeInfoArray: SizeInfo[],
@@ -117,20 +108,20 @@ function resize(
   let prevRemainingOffset = offset;
 
   for (
-    let sectionID = barID + trend;
-    isValidSectionID(sectionID);
-    sectionID += trend
+    let sectionIndex = barIndex + trend;
+    isValidSectionIndex(sectionIndex);
+    sectionIndex += trend
   ) {
     if (prevRemainingOffset) {
       const { sizeInfo, remainingOffset } = doResize(
         prevRemainingOffset,
-        sizeInfoArray[sectionID],
+        sizeInfoArray[sectionIndex],
       );
 
       prevRemainingOffset = remainingOffset;
       collect(sizeInfo);
     } else {
-      collect(sizeInfoArray[sectionID]);
+      collect(sizeInfoArray[sectionIndex]);
     }
   }
 
@@ -142,7 +133,7 @@ function resize(
     }
   }
 
-  function isValidSectionID(sectionID: number): boolean {
+  function isValidSectionIndex(sectionID: number): boolean {
     if (trend === -1) {
       return sectionID >= 0;
     } else {
@@ -157,21 +148,21 @@ function resize(
 }
 
 export function getNextSizeRelatedInfo(
-  barID: number,
+  barIndex: number,
   offset: number,
   sizeInfoArray: SizeInfo[],
 ): SizeRelatedInfo {
   const { collect, getResult } = collectSizeRelatedInfo();
 
-  const leftResult = resize(barID, offset, -1, sizeInfoArray);
-  const rightResult = resize(barID, -offset, 1, sizeInfoArray);
+  const leftResult = resize(barIndex, offset, -1, sizeInfoArray);
+  const rightResult = resize(barIndex, -offset, 1, sizeInfoArray);
 
   const leftUsedOffset = offset - leftResult.remainingOffset;
   const rightUsedOffset = -offset - rightResult.remainingOffset;
 
   function collectAll(left: SizeInfo[], right: SizeInfo[]) {
     left.forEach(collect);
-    collect(sizeInfoArray[barID]);
+    collect(sizeInfoArray[barIndex]);
     right.forEach(collect);
   }
 
@@ -179,11 +170,11 @@ export function getNextSizeRelatedInfo(
     collectAll(leftResult.sizeInfoArray, rightResult.sizeInfoArray);
   } else if (Math.abs(leftUsedOffset) < Math.abs(rightUsedOffset)) {
     // left side sections was limited
-    const newRightResult = resize(barID, -leftUsedOffset, 1, sizeInfoArray);
+    const newRightResult = resize(barIndex, -leftUsedOffset, 1, sizeInfoArray);
     collectAll(leftResult.sizeInfoArray, newRightResult.sizeInfoArray);
   } else {
     // right side sections was limited
-    const newLeftResult = resize(barID, -rightUsedOffset, -1, sizeInfoArray);
+    const newLeftResult = resize(barIndex, -rightUsedOffset, -1, sizeInfoArray);
     collectAll(newLeftResult.sizeInfoArray, rightResult.sizeInfoArray);
   }
 

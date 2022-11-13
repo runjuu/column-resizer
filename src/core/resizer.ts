@@ -4,11 +4,11 @@ import { getNextSizeRelatedInfo } from './utils';
 
 type ResizeResult = SizeRelatedInfo | BarActionScanResult;
 
-function getBarID(indexOfBar: number): number {
+function getBarIndex(indexOfBar: number): number {
   return indexOfBar * 2 + 1;
 }
 
-function getSectionID(indexOfSection: number): number {
+function getSectionIndex(indexOfSection: number): number {
   return indexOfSection * 2;
 }
 
@@ -17,24 +17,18 @@ export class Resizer {
 
   constructor(private resizeResult: ResizeResult) {}
 
-  resizeSection(
-    indexOfSection: number,
-    config: { toSize: number; preferMoveLeftBar?: boolean },
-  ) {
+  resizeSection(indexOfSection: number, config: { toSize: number; preferMoveLeftBar?: boolean }) {
     if (this.isDiscarded) {
       return;
     }
 
-    const sectionID = getSectionID(indexOfSection);
+    const sectionID = getSectionIndex(indexOfSection);
     const currentSize = this.getSize(sectionID);
 
     if (currentSize >= 0 && config.toSize >= 0) {
       const offset = config.toSize - currentSize;
 
-      if (
-        sectionID === this.resizeResult.sizeInfoArray.length - 1 ||
-        config.preferMoveLeftBar
-      ) {
+      if (sectionID === this.resizeResult.sizeInfoArray.length - 1 || config.preferMoveLeftBar) {
         this.moveBar(indexOfSection - 1, { withOffset: -offset });
       } else {
         this.moveBar(indexOfSection, { withOffset: offset });
@@ -48,7 +42,7 @@ export class Resizer {
     }
 
     this.resizeResult = getNextSizeRelatedInfo(
-      getBarID(indexOfBar),
+      getBarIndex(indexOfBar),
       config.withOffset,
       this.resizeResult.sizeInfoArray,
     );
@@ -59,12 +53,11 @@ export class Resizer {
   }
 
   isSectionResized(indexOfSection: number): boolean {
-    const sectionID = getSectionID(indexOfSection);
+    const sectionID = getSectionIndex(indexOfSection);
 
     if ('defaultSizeInfoArray' in this.resizeResult) {
       return (
-        this.getSize(sectionID) !==
-        this.resizeResult.defaultSizeInfoArray[sectionID].currentSize
+        this.getSize(sectionID) !== this.resizeResult.defaultSizeInfoArray[sectionID].currentSize
       );
     } else {
       return false;
@@ -72,15 +65,15 @@ export class Resizer {
   }
 
   isBarActivated(indexOfBar: number): boolean {
-    if ('barID' in this.resizeResult) {
-      return this.resizeResult.barID === getBarID(indexOfBar);
+    if ('barIndex' in this.resizeResult) {
+      return this.resizeResult.barIndex === getBarIndex(indexOfBar);
     } else {
       return false;
     }
   }
 
   getSectionSize(indexOfSection: number) {
-    return this.getSize(getSectionID(indexOfSection));
+    return this.getSize(getSectionIndex(indexOfSection));
   }
 
   getResult(): SizeRelatedInfo {

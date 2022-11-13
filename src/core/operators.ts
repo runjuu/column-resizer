@@ -1,16 +1,10 @@
 import { scan } from 'rxjs/operators';
 
-import {
-  BarAction,
-  BarActionType,
-  Coordinate,
-  SizeInfo,
-  SizeRelatedInfo,
-} from '../types';
+import { BarAction, BarActionType, Coordinate, SizeInfo, SizeRelatedInfo } from '../types';
 import { DEFAULT_COORDINATE_OFFSET, getNextSizeRelatedInfo } from './utils';
 
 export interface BarActionScanResult extends SizeRelatedInfo {
-  barID: number;
+  barIndex: number;
   offset: number;
   type: BarActionType;
   originalCoordinate: Coordinate;
@@ -23,7 +17,7 @@ interface ScanBarActionConfig {
 }
 
 const DEFAULT_BAR_ACTION_SCAN_RESULT: BarActionScanResult = {
-  barID: -1,
+  barIndex: -1,
   offset: 0,
   type: BarActionType.DEACTIVATE,
   originalCoordinate: DEFAULT_COORDINATE_OFFSET,
@@ -36,7 +30,7 @@ const DEFAULT_BAR_ACTION_SCAN_RESULT: BarActionScanResult = {
 export function scanBarAction(config: ScanBarActionConfig) {
   return scan<BarAction, BarActionScanResult>((prevResult, action) => {
     const result = {
-      barID: action.barID,
+      barIndex: action.barIndex,
       type: action.type,
     };
 
@@ -53,18 +47,11 @@ export function scanBarAction(config: ScanBarActionConfig) {
           flexGrowRatio,
         };
       case BarActionType.MOVE:
-        const offset = config.calculateOffset(
-          action.coordinate,
-          prevResult.originalCoordinate,
-        );
+        const offset = config.calculateOffset(action.coordinate, prevResult.originalCoordinate);
 
         return {
           ...result,
-          ...getNextSizeRelatedInfo(
-            action.barID,
-            offset,
-            prevResult.defaultSizeInfoArray,
-          ),
+          ...getNextSizeRelatedInfo(action.barIndex, offset, prevResult.defaultSizeInfoArray),
           offset,
           originalCoordinate: prevResult.originalCoordinate,
           defaultSizeInfoArray: prevResult.defaultSizeInfoArray,
