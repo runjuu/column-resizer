@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import {
   Simple,
@@ -12,7 +12,7 @@ import {
   InteractiveSection,
 } from './sections';
 
-ReactDOM.render(
+createRoot(document.getElementById('app')!).render(
   <main>
     <h1>Default Behavior</h1>
     <Simple />
@@ -25,5 +25,4 @@ ReactDOM.render(
     <CollapsibleSection />
     <InteractiveSection />
   </main>,
-  document.getElementById('app'),
 );
