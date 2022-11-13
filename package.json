@@ -1,57 +1,62 @@
 {
-  "name": "react-simple-resizer",
-  "version": "2.1.0",
+  "name": "column-resizer-monorepo",
+  "version": "0.0.1",
   "description": "An intuitive React component set for multi-column resizing",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "dev": "parcel ./demo/index.html",
-    "build:demo": "rm -rf ./demo/dist/* && parcel build ./demo/index.html --out-dir ./demo/dist --public-url ./",
-    "build": "rm -rf ./dist && tsc -p ./tsconfig.build.json",
-    "prettier": "prettier '@(src|demo)/**/*.@(ts|tsx|html|less)' --write",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LeetCode-OpenSource/react-simple-resizer.git"
   },
+  "bugs": {
+    "url": "https://github.com/LeetCode-OpenSource/react-simple-resizer/issues"
+  },
+  "homepage": "https://github.com/LeetCode-OpenSource/react-simple-resizer#readme",
+  "author": "LeetCode front-end team",
   "keywords": [
     "react",
     "resize",
     "resizer",
     "multi-column"
   ],
-  "bugs": {
-    "url": "https://github.com/LeetCode-OpenSource/react-simple-resizer/issues"
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "turbo run build",
+    "build:pkgs": "turbo run build --filter=@column-resizer/*",
+    "build:release": "turbo run build:release --force",
+    "bump-version": "bumpp package.json packages/*/package.json examples/*/package.json",
+    "clean": "turbo run clean",
+    "format": "run-p format:code format:package",
+    "format:code": "prettier '@(packages|examples)/**/*.@(ts|tsx|html|json)' --write",
+    "format:package": "format-package 'package.json' -w -c format-package.json",
+    "lint": "eslint . --ext .ts,.tsx --fix --max-warnings 0",
+    "prepare": "husky install",
+    "release": "run-s build:release bump-version",
+    "test": "turbo run test"
   },
-  "homepage": "https://github.com/LeetCode-OpenSource/react-simple-resizer#readme",
-  "author": "LeetCode front-end team",
-  "license": "MIT",
   "lint-staged": {
     "*.{ts,tsx,less,html}": [
       "prettier --write"
     ]
   },
+  "types": "./dist/index.d.ts",
   "devDependencies": {
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.8",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
+    "bumpp": "^8.2.1",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.10",
+    "format-package": "^7.0.0",
     "husky": "^8.0.2",
-    "less": "^4.1.3",
     "lint-staged": "^13.0.3",
-    "normalize.css": "^8.0.1",
-    "parcel-bundler": "^1.10.3",
-    "parcel-plugin-bundle-visualiser": "^1.2.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "2.7.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "tslib": "^2.4.1",
+    "turbo": "^1.6.3",
     "typescript": "^4.8.4"
-  },
-  "dependencies": {
-    "rxjs": "^7.5.7"
-  },
-  "peerDependencies": {
-    "react": "^16.3.0",
-    "react-dom": "^18.2.0"
   }
 }
