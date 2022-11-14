@@ -1,50 +1,48 @@
-import { Subscription } from 'rxjs';
-
-import { BarAction, BarActionType, Coordinate, ResizerItemController } from '../types';
-import { DISABLE_PASSIVE } from '../utils';
-
-import { dispatchItemEvent } from '../item-events';
+import { BarAction, BarActionType, Coordinate, ItemType, ColumnInstance } from '../types';
+import { DISABLE_PASSIVE, dispatchResizerEvent } from '../utils';
 
 export type DispatchBarAction = (elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) => void;
 
-export class BarController implements ResizerItemController {
+export class ColumnBar extends ColumnInstance {
   private isActive = false;
   private isValidClick = true;
-  private subscription = new Subscription();
 
-  constructor(container: HTMLElement, private readonly dispatchBarAction: DispatchBarAction) {
-    const onMouseDown = this.triggerMouseAction(container, BarActionType.ACTIVATE);
-    const onMouseMove = this.triggerMouseAction(container, BarActionType.MOVE);
-    const onMouseUp = this.triggerMouseAction(container, BarActionType.DEACTIVATE);
+  constructor(
+    public readonly elm: HTMLElement,
+    private readonly dispatchBarAction: DispatchBarAction,
+  ) {
+    super(ItemType.BAR, elm, {});
 
-    const onTouchStart = this.triggerTouchAction(container, BarActionType.ACTIVATE);
-    const onTouchMove = this.triggerTouchAction(container, BarActionType.MOVE);
-    const onTouchEnd = this.triggerTouchAction(container, BarActionType.DEACTIVATE);
-    const onTouchCancel = this.triggerTouchAction(container, BarActionType.DEACTIVATE);
+    const onMouseDown = this.triggerMouseAction(elm, BarActionType.ACTIVATE);
+    const onMouseMove = this.triggerMouseAction(elm, BarActionType.MOVE);
+    const onMouseUp = this.triggerMouseAction(elm, BarActionType.DEACTIVATE);
 
-    container.addEventListener('mousedown', onMouseDown);
+    const onTouchStart = this.triggerTouchAction(elm, BarActionType.ACTIVATE);
+    const onTouchMove = this.triggerTouchAction(elm, BarActionType.MOVE);
+    const onTouchEnd = this.triggerTouchAction(elm, BarActionType.DEACTIVATE);
+    const onTouchCancel = this.triggerTouchAction(elm, BarActionType.DEACTIVATE);
+
+    elm.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
-    container.addEventListener('touchstart', onTouchStart, DISABLE_PASSIVE);
+    elm.addEventListener('touchstart', onTouchStart, DISABLE_PASSIVE);
     document.addEventListener('touchmove', onTouchMove, DISABLE_PASSIVE);
     document.addEventListener('touchend', onTouchEnd);
     document.addEventListener('touchcancel', onTouchCancel);
 
-    this.subscription.add(() => {
-      container.removeEventListener('mousedown', onMouseDown);
+    this.destroy = () => {
+      super.destroy();
+
+      elm.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
 
-      container.removeEventListener('touchstart', onTouchStart);
+      elm.removeEventListener('touchstart', onTouchStart);
       document.removeEventListener('touchmove', onTouchMove);
       document.removeEventListener('touchend', onTouchEnd);
       document.removeEventListener('touchcancel', onTouchCancel);
-    });
-  }
-
-  destroy() {
-    this.subscription.unsubscribe();
+    };
   }
 
   private triggerMouseAction(elm: HTMLElement, type: BarActionType) {
@@ -78,7 +76,7 @@ export class BarController implements ResizerItemController {
     if (this.isActive && this.isValidClick && type === BarActionType.DEACTIVATE) {
       this.isValidClick = false; // avoid trigger twice on mobile.
       // touch and click
-      dispatchItemEvent(elm, 'bar:click', null);
+      dispatchResizerEvent(elm, 'bar:click', null);
     }
 
     this.updateStatusIfNeed(elm, type);
@@ -89,7 +87,7 @@ export class BarController implements ResizerItemController {
     const onStatusChanged = (isActive: boolean) => {
       if (this.isActive !== isActive) {
         this.isActive = isActive;
-        dispatchItemEvent(elm, 'bar:status-change', { isActive });
+        dispatchResizerEvent(elm, 'bar:status-change', { isActive });
       }
     };
 

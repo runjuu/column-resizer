@@ -1,5 +1,8 @@
+export * from './bar-store';
 export * from './calculate-coordinate-offset';
 export * from './collect-size-related-info';
+export * from './column-events';
+export * from './column-items-cache';
 export * from './disable-passive';
 export * from './get-next-size-related-info';
 export * from './is-disabled-responsive';
@@ -7,4 +10,3 @@ export * from './is-solid-item';
 export * from './is-valid-number';
 export * from './is-valid-type';
 export * from './parse-resizer-items';
-export * from './scan-bar-action';

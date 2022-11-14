@@ -1,5 +1,5 @@
 import React, { MutableRefObject, Ref } from 'react';
-import { ItemEventMap, ColumnResizer, ColumnResizerConfig } from '@column-resizer/core';
+import { ColumnResizerEventMap, ColumnResizer, ColumnResizerConfig } from '@column-resizer/core';
 
 import { ColumnResizerContext } from './context';
 
@@ -26,10 +26,10 @@ export function useColumnResizer() {
   return React.useContext(ColumnResizerContext)!;
 }
 
-export function useColumnResizerEvent<E extends Element, K extends keyof ItemEventMap>(
+export function useColumnResizerEvent<E extends Element, K extends keyof ColumnResizerEventMap>(
   elmRef: React.RefObject<E>,
   key: K,
-  callback?: (event: CustomEvent<ItemEventMap[K]>) => void,
+  callback?: (event: CustomEvent<ColumnResizerEventMap[K]>) => void,
 ) {
   const columnResizer = useColumnResizer();
   const refCallback = useRefCallback(callback);

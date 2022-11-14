@@ -1,8 +1,8 @@
-import { ResizerItem, ResizerItemConfig } from '../types';
+import { ColumnInstance, ResizerItemConfig } from '../types';
 
 import { isValidType } from './is-valid-type';
 
-export function parseResizerItems(container: HTMLElement): Omit<ResizerItem, 'controller'>[] {
+export function parseResizerItems(container: HTMLElement): Omit<ColumnInstance, 'destroy'>[] {
   return Array.from(container.childNodes)
     .map((elm) => {
       if (!(elm instanceof HTMLElement)) return null;

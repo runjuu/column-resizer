@@ -8,6 +8,8 @@ export enum ItemType {
   SECTION = 'SECTION',
 }
 
+export type CancelLogic = () => void;
+
 export type Trend = -1 | 0 | 1;
 
 export enum BarActionType {
@@ -16,16 +18,15 @@ export enum BarActionType {
   DEACTIVATE = 'deactivate',
 }
 
-export type ResizerItemController = {
-  destroy(): void;
-};
+export abstract class ColumnInstance {
+  protected constructor(
+    public readonly type: ItemType,
+    public readonly elm: HTMLElement,
+    public readonly config: ResizerItemConfig,
+  ) {}
 
-export type ResizerItem = {
-  type: ItemType;
-  elm: HTMLElement;
-  config: ResizerItemConfig;
-  controller: ResizerItemController;
-};
+  destroy() {}
+}
 
 export type ResizerItemConfig = {
   size?: number;
@@ -54,4 +55,10 @@ export type SizeRelatedInfo = {
   discard?: boolean;
   sizeInfoArray: SizeInfo[];
   flexGrowRatio: number;
+};
+
+export type ColumnResizerEventMap = {
+  'bar:click': null;
+  'bar:status-change': { isActive: boolean };
+  'section:size-change': { size: number };
 };

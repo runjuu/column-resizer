@@ -1,9 +1,6 @@
-import { animationFrameScheduler, merge, Subject } from 'rxjs';
-import { filter, map, observeOn, share, tap } from 'rxjs/operators';
-
-import { BarAction, BarActionType, ItemType, ResizerItem, SizeRelatedInfo } from './types';
+import { BarActionType, ItemType, SizeRelatedInfo } from './types';
 import { Resizer } from './resizer';
-import { BarController, SectionController, DispatchBarAction } from './item-controllers';
+import { ColumnSection, ColumnBar, DispatchBarAction } from './column-items';
 import {
   parseResizerItems,
   isSolidItem,
@@ -11,9 +8,10 @@ import {
   calculateCoordinateOffset,
   collectSizeRelatedInfo,
   BarActionScanResult,
-  scanBarAction,
+  ColumnItemsCache,
+  watchResizerEvent,
+  createBarStore,
 } from './utils';
-import { watchItemEvent } from './item-events';
 
 export type ColumnResizerConfig = {
   vertical: boolean;
@@ -22,71 +20,51 @@ export type ColumnResizerConfig = {
   afterResizing?: () => void;
 };
 
-type ResizerItems = ReadonlyArray<Readonly<ResizerItem>>;
-
 export class ColumnResizer {
-  private items: ResizerItems = [];
-  private readonly barActions$ = new Subject<BarAction>();
-  private readonly sizeRelatedInfoAction$ = new Subject<SizeRelatedInfo>();
+  private itemsCache = new ColumnItemsCache();
 
-  constructor(public readonly config: Readonly<ColumnResizerConfig>) {}
+  private barStore = createBarStore({
+    calculateOffset: (current, original) => calculateCoordinateOffset(current, original)[this.axis],
+    getSizeRelatedInfo: () => this.makeSizeInfos(),
+  });
+
+  constructor(public readonly config: Readonly<ColumnResizerConfig>) {
+    this.barStore.subscribe((state) => {
+      this.monitorBarStatusChanges(state);
+      this.sizeRelatedInfoChange(state);
+    });
+  }
+
+  on = watchResizerEvent;
 
   refresh(container: HTMLElement | null) {
-    this.items.forEach((item) => item.controller.destroy());
-
     if (container) {
-      this.items = parseResizerItems(container).map((item) => {
-        switch (item.type) {
-          case ItemType.BAR:
-            return { ...item, controller: new BarController(item.elm, this.dispatchBarAction) };
-          case ItemType.SECTION:
-            return { ...item, controller: new SectionController(this, item.elm, item.config) };
-        }
-      });
+      this.itemsCache.update(
+        parseResizerItems(container).map((item) => {
+          switch (item.type) {
+            case ItemType.BAR:
+              return new ColumnBar(item.elm, this.dispatchBarAction);
+            case ItemType.SECTION:
+              return new ColumnSection(item.elm, item.config);
+          }
+        }),
+      );
 
-      this.sizeRelatedInfoAction$.next(this.makeSizeInfos());
+      this.sizeRelatedInfoChange(this.makeSizeInfos());
     }
   }
 
-  on = watchItemEvent;
-
-  private dispatchBarAction: DispatchBarAction = (elm, action) => {
-    const barIndex = this.items.findIndex((item) => item.elm === elm);
-    this.barActions$.next({ ...action, barIndex });
-  };
-
-  readonly sizeRelatedInfo$ = merge(
-    this.sizeRelatedInfoAction$,
-    this.barActions$.pipe(
-      scanBarAction({
-        calculateOffset: (current, original) =>
-          calculateCoordinateOffset(current, original)[this.axis],
-        getSizeRelatedInfo: () => this.makeSizeInfos(),
-      }),
-      tap((scanResult) => this.monitorBarStatusChanges(scanResult)),
-    ),
-  ).pipe(
-    filter(({ discard }) => !discard),
-    map((resizeResult) => {
-      if (typeof this.config.beforeApplyResizer === 'function') {
-        const resizer = new Resizer(resizeResult);
-        this.config.beforeApplyResizer(resizer);
-        return resizer.getResult();
-      } else {
-        return resizeResult;
-      }
-    }),
-    filter(({ discard }) => !discard),
-    observeOn(animationFrameScheduler),
-    share(),
-  );
+  destroy() {
+    this.itemsCache.reset();
+    this.barStore.clearSubscription();
+  }
 
   getResizer(): Resizer {
     return new Resizer(this.makeSizeInfos());
   }
 
   applyResizer(resizer: Resizer): void {
-    this.sizeRelatedInfoAction$.next(resizer.getResult());
+    this.sizeRelatedInfoChange(resizer.getResult());
   }
 
   private get axis() {
@@ -95,6 +73,38 @@ export class ColumnResizer {
 
   private get dimension() {
     return this.config.vertical ? 'height' : 'width';
+  }
+
+  private dispatchBarAction: DispatchBarAction = (elm, action) => {
+    const barIndex = this.itemsCache.getItemIndex(elm);
+
+    if (barIndex) {
+      this.barStore.dispatch({ ...action, barIndex });
+    }
+  };
+
+  private sizeRelatedInfoChange(info: SizeRelatedInfo | BarActionScanResult) {
+    if (info.discard) return;
+
+    info = (() => {
+      if (typeof this.config.beforeApplyResizer === 'function') {
+        const resizer = new Resizer(info);
+        this.config.beforeApplyResizer(resizer);
+        return resizer.getResult();
+      } else {
+        return info;
+      }
+    })();
+
+    if (info.discard) return;
+
+    info.sizeInfoArray.forEach((sizeInfo) => {
+      const item = this.itemsCache.getItem(sizeInfo.elm);
+
+      if (item instanceof ColumnSection) {
+        item.update({ sizeInfo, flexGrowRatio: info.flexGrowRatio });
+      }
+    });
   }
 
   private monitorBarStatusChanges({ type }: BarActionScanResult) {
@@ -113,7 +123,7 @@ export class ColumnResizer {
   private makeSizeInfos(): SizeRelatedInfo {
     const { collect, getResult } = collectSizeRelatedInfo();
 
-    this.items.forEach(({ config, elm }) => {
+    this.itemsCache.getItems().forEach(({ config, elm }) => {
       collect({
         elm,
         maxSize: config.maxSize,

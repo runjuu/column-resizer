@@ -31,8 +31,5 @@
     "build:cjs": "tsc -p tsconfig.json -m CommonJS --outDir dist/cjs",
     "build:esm": "tsc -p tsconfig.json -m ESNext --outDir dist/esm",
     "clean": "rm -rf ./dist"
-  },
-  "dependencies": {
-    "rxjs": "^7.5.7"
   }
 }
