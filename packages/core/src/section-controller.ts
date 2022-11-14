@@ -2,7 +2,7 @@ import { map } from 'rxjs/operators';
 
 import { ResizerItemConfig, SizeInfo } from './types';
 import { isValidNumber, noop } from './utils';
-import { ResizerController } from './resizer-controller';
+import { ColumnResizer } from './column-resizer';
 
 export type SectionControllerConfig = ResizerItemConfig & {
   onSizeChanged?: (currentSize: number) => void;
@@ -35,7 +35,7 @@ export class SectionController {
   }
 
   constructor(
-    private readonly controller: ResizerController,
+    private readonly controller: ColumnResizer,
     private readonly config: SectionControllerConfig,
   ) {}
 

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ChildProps, ExpandInteractiveArea } from '../types';
 
 import { StyledBar, StyledInteractiveArea } from './styled';
-import { useResizerController, useForwardedRef } from '../hooks';
+import { useColumnResizer, useForwardedRef } from '../hooks';
 
 type Props = React.HTMLAttributes<HTMLDivElement> &
   BarControllerConfig & {
@@ -22,12 +22,12 @@ export function Bar({
   size,
   ...props
 }: Props) {
-  const controller = useResizerController();
+  const columnResizer = useColumnResizer();
   const ref = useForwardedRef<HTMLDivElement | null>(null, innerRef);
 
   React.useEffect(
-    () => new BarController(controller, { onClick, onStatusChanged, size }).setup(ref.current),
-    [controller, onClick, onStatusChanged, size, ref],
+    () => new BarController(columnResizer, { onClick, onStatusChanged, size }).setup(ref.current),
+    [columnResizer, onClick, onStatusChanged, size, ref],
   );
 
   return (
@@ -39,7 +39,7 @@ export function Bar({
       ref={ref}
     >
       {children}
-      <StyledInteractiveArea {...expandInteractiveArea} vertical={controller.config.vertical} />
+      <StyledInteractiveArea {...expandInteractiveArea} vertical={columnResizer.config.vertical} />
     </StyledBar>
   );
 }

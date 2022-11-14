@@ -1,11 +1,11 @@
 import React, { MutableRefObject, Ref } from 'react';
-import { ResizerControllerContext } from './context';
+import { ColumnResizerContext } from './context';
 
 export const useIsomorphicLayoutEffect =
   typeof window === 'object' ? React.useLayoutEffect : React.useEffect;
 
-export function useResizerController() {
-  return React.useContext(ResizerControllerContext)!;
+export function useColumnResizer() {
+  return React.useContext(ColumnResizerContext)!;
 }
 
 export function useForwardedRef<T>(

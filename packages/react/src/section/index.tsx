@@ -2,7 +2,7 @@ import { SectionController, ItemType } from '@column-resizer/core';
 import * as React from 'react';
 
 import { ChildProps } from '../types';
-import { useIsomorphicLayoutEffect, useForwardedRef, useResizerController } from '../hooks';
+import { useIsomorphicLayoutEffect, useForwardedRef, useColumnResizer } from '../hooks';
 
 export type SectionProps = Omit<ChildProps, 'context'> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -20,12 +20,12 @@ export function Section({
   ...props
 }: SectionProps) {
   const ref = useForwardedRef<HTMLDivElement | null>(null, innerRef);
-  const controller = useResizerController();
+  const columnResizer = useColumnResizer();
 
   useIsomorphicLayoutEffect(() => {
     const elm = ref.current;
 
-    return new SectionController(controller, {
+    return new SectionController(columnResizer, {
       defaultSize,
       size,
       disableResponsive,
@@ -39,7 +39,7 @@ export function Section({
         elm.style.flexBasis = `${flexBasis}px`;
       }
     });
-  }, [controller, defaultSize, size, disableResponsive, minSize, maxSize, onSizeChanged, ref]);
+  }, [columnResizer, defaultSize, size, disableResponsive, minSize, maxSize, onSizeChanged, ref]);
 
   return (
     <div
@@ -49,8 +49,8 @@ export function Section({
       {...props}
       style={{
         overflow: 'hidden',
-        [controller.config.vertical ? 'maxHeight' : 'maxWidth']: maxSize,
-        [controller.config.vertical ? 'minHeight' : 'minWidth']: minSize,
+        [columnResizer.config.vertical ? 'maxHeight' : 'maxWidth']: maxSize,
+        [columnResizer.config.vertical ? 'minHeight' : 'minWidth']: minSize,
         ...props.style,
       }}
     />

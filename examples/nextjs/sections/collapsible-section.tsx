@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, Section, Bar, Resizer, ResizerController } from '@column-resizer/react';
+import { Container, Section, Bar, Resizer, ColumnResizer } from '@column-resizer/react';
 
 function beforeApplyResizer(resizer: Resizer): void {
   if (resizer.getSectionSize(0) < 150) {
@@ -11,7 +11,7 @@ function beforeApplyResizer(resizer: Resizer): void {
 }
 
 export class CollapsibleSection extends React.PureComponent {
-  readonly controllerRef = React.createRef<ResizerController>();
+  readonly controllerRef = React.createRef<ColumnResizer>();
 
   render() {
     return (

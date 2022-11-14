@@ -13,7 +13,7 @@ import {
   isSolid,
 } from './utils';
 
-export type ResizerControllerConfig = {
+export type ColumnResizerConfig = {
   vertical: boolean;
   onActivate?: () => void;
   beforeApplyResizer?: (resizer: Resizer) => void;
@@ -22,12 +22,12 @@ export type ResizerControllerConfig = {
 
 type ResizerItems = ReadonlyArray<Readonly<ResizerItem>>;
 
-export class ResizerController {
+export class ColumnResizer {
   private items: ResizerItems = [];
   private readonly barActions$ = new Subject<BarAction>();
   private readonly sizeRelatedInfoAction$ = new Subject<SizeRelatedInfo>();
 
-  constructor(public readonly config: Readonly<ResizerControllerConfig>) {}
+  constructor(public readonly config: Readonly<ColumnResizerConfig>) {}
 
   refresh(container: HTMLElement | null) {
     if (!container) return;

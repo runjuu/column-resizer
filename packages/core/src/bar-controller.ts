@@ -1,7 +1,7 @@
 import { BarActionType, Coordinate } from './types';
 import { DISABLE_PASSIVE, noop } from './utils';
 
-import { ResizerController } from './resizer-controller';
+import { ColumnResizer } from './column-resizer';
 
 export type BarControllerConfig = {
   size: number;
@@ -14,7 +14,7 @@ export class BarController {
   private isValidClick = true;
 
   constructor(
-    private readonly controller: ResizerController,
+    private readonly controller: ColumnResizer,
     private readonly config: BarControllerConfig,
   ) {}
 
