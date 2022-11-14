@@ -1,7 +1,6 @@
 import React, { MutableRefObject, Ref } from 'react';
 import { ItemEventMap, ColumnResizer, ColumnResizerConfig } from '@column-resizer/core';
 
-import { AnyFunc } from './types';
 import { ColumnResizerContext } from './context';
 
 export const useIsomorphicLayoutEffect =
@@ -52,6 +51,7 @@ export function useForwardedRef<T>(
   return ref;
 }
 
+type AnyFunc = (...params: any[]) => any;
 export function useRefCallback<T extends AnyFunc>(callback?: T): T;
 export function useRefCallback(callback?: AnyFunc): AnyFunc {
   const callbackRef = React.useRef(callback);

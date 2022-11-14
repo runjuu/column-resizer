@@ -1,6 +1,11 @@
 import * as React from 'react';
 
-import { ExpandInteractiveArea } from '../types';
+export type ExpandInteractiveArea = {
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+};
 
 export type StyledBarProps = React.HTMLAttributes<HTMLDivElement> & {
   size: number;

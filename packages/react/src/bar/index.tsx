@@ -1,12 +1,12 @@
 import { ItemType } from '@column-resizer/core';
 import * as React from 'react';
 
-import { ExpandInteractiveArea } from '../types';
 import { useColumnResizer, useColumnResizerEvent, useForwardedRef } from '../hooks';
+import { StyledBar, StyledInteractiveArea, ExpandInteractiveArea } from './styled';
 
-import { StyledBar, StyledInteractiveArea } from './styled';
+export type { ExpandInteractiveArea };
 
-type Props = Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> & {
+export type BarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> & {
   size: number;
   expandInteractiveArea?: ExpandInteractiveArea;
   innerRef?: React.RefObject<HTMLDivElement>;
@@ -22,7 +22,7 @@ export function Bar({
   onStatusChanged,
   size,
   ...props
-}: Props) {
+}: BarProps) {
   const columnResizer = useColumnResizer();
   const ref = useForwardedRef<HTMLDivElement | null>(null, innerRef);
 
