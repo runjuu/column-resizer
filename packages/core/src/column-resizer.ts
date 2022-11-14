@@ -1,17 +1,19 @@
 import { animationFrameScheduler, merge, Subject } from 'rxjs';
 import { filter, map, observeOn, share, tap } from 'rxjs/operators';
 
-import { BarAction, BarActionType, ResizerItem, SizeRelatedInfo } from '../types';
-import { parseResizerItems } from '../utils';
-import { Resizer } from '../resizer';
-
-import { BarActionScanResult, scanBarAction } from './scan-bar-action';
+import { BarAction, BarActionType, ItemType, ResizerItem, SizeRelatedInfo } from './types';
+import { Resizer } from './resizer';
+import { BarController, SectionController } from './item-controllers';
 import {
+  parseResizerItems,
+  isSolidItem,
+  isDisabledResponsive,
   calculateCoordinateOffset,
   collectSizeRelatedInfo,
-  isDisabledResponsive,
-  isSolid,
+  BarActionScanResult,
+  scanBarAction,
 } from './utils';
+import { watchItemEvent } from './item-events';
 
 export type ColumnResizerConfig = {
   vertical: boolean;
@@ -30,11 +32,23 @@ export class ColumnResizer {
   constructor(public readonly config: Readonly<ColumnResizerConfig>) {}
 
   refresh(container: HTMLElement | null) {
-    if (!container) return;
+    this.items.forEach((item) => item.controller.destroy());
 
-    this.items = parseResizerItems(container);
-    this.sizeRelatedInfoAction$.next(this.makeSizeInfos());
+    if (container) {
+      this.items = parseResizerItems(container).map((item) => {
+        switch (item.type) {
+          case ItemType.BAR:
+            return { ...item, controller: new BarController(this, item.elm) };
+          case ItemType.SECTION:
+            return { ...item, controller: new SectionController(this, item.elm, item.config) };
+        }
+      });
+
+      this.sizeRelatedInfoAction$.next(this.makeSizeInfos());
+    }
   }
+
+  on = watchItemEvent;
 
   triggerBarAction(elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) {
     this.barActions$.next({
@@ -107,7 +121,7 @@ export class ColumnResizer {
         maxSize: config.maxSize,
         minSize: config.minSize,
         disableResponsive: isDisabledResponsive(config),
-        isSolid: isSolid(config),
+        isSolid: isSolidItem(config),
         currentSize: elm.getBoundingClientRect()[this.dimension],
       });
     });

@@ -2,7 +2,8 @@ import { scan } from 'rxjs/operators';
 
 import { BarAction, BarActionType, Coordinate, SizeInfo, SizeRelatedInfo } from '../types';
 
-import { DEFAULT_COORDINATE_OFFSET, getNextSizeRelatedInfo } from './utils';
+import { getNextSizeRelatedInfo } from './get-next-size-related-info';
+import { DEFAULT_COORDINATE_OFFSET } from './calculate-coordinate-offset';
 
 export interface BarActionScanResult extends SizeRelatedInfo {
   barIndex: number;

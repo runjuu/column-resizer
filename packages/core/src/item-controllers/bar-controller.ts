@@ -1,26 +1,17 @@
-import { BarActionType, Coordinate } from './types';
-import { DISABLE_PASSIVE, noop } from './utils';
+import { Subscription } from 'rxjs';
 
-import { ColumnResizer } from './column-resizer';
+import { BarActionType, Coordinate, ResizerItemController } from '../types';
+import { DISABLE_PASSIVE } from '../utils';
 
-export type BarControllerConfig = {
-  size: number;
-  onClick?: () => void;
-  onStatusChanged?: (isActive: boolean) => void;
-};
+import { ColumnResizer } from '../column-resizer';
+import { dispatchItemEvent } from '../item-events';
 
-export class BarController {
-  private isActivated = false;
+export class BarController implements ResizerItemController {
+  private isActive = false;
   private isValidClick = true;
+  private subscription = new Subscription();
 
-  constructor(
-    private readonly controller: ColumnResizer,
-    private readonly config: BarControllerConfig,
-  ) {}
-
-  setup(container: HTMLElement | null) {
-    if (!container) return noop;
-
+  constructor(private readonly controller: ColumnResizer, container: HTMLElement) {
     const onMouseDown = this.triggerMouseAction(container, BarActionType.ACTIVATE);
     const onMouseMove = this.triggerMouseAction(container, BarActionType.MOVE);
     const onMouseUp = this.triggerMouseAction(container, BarActionType.DEACTIVATE);
@@ -39,7 +30,7 @@ export class BarController {
     document.addEventListener('touchend', onTouchEnd);
     document.addEventListener('touchcancel', onTouchCancel);
 
-    return () => {
+    this.subscription.add(() => {
       container.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -48,7 +39,11 @@ export class BarController {
       document.removeEventListener('touchmove', onTouchMove);
       document.removeEventListener('touchend', onTouchEnd);
       document.removeEventListener('touchcancel', onTouchCancel);
-    };
+    });
+  }
+
+  destroy() {
+    this.subscription.unsubscribe();
   }
 
   private triggerMouseAction(elm: HTMLElement, type: BarActionType) {
@@ -69,31 +64,31 @@ export class BarController {
   }
 
   private disableUserSelectIfResizing(event: MouseEvent | TouchEvent, type: BarActionType) {
-    if (this.isActivated || type === BarActionType.ACTIVATE) {
+    if (this.isActive || type === BarActionType.ACTIVATE) {
       event.preventDefault();
     }
   }
 
   private triggerAction(elm: HTMLElement, type: BarActionType, coordinate: Coordinate) {
-    if (this.isActivated || type === BarActionType.ACTIVATE) {
+    if (this.isActive || type === BarActionType.ACTIVATE) {
       this.controller.triggerBarAction(elm, { type, coordinate });
     }
 
-    if (this.isActivated && this.isValidClick && type === BarActionType.DEACTIVATE) {
+    if (this.isActive && this.isValidClick && type === BarActionType.DEACTIVATE) {
       this.isValidClick = false; // avoid trigger twice on mobile.
       // touch and click
-      this.config.onClick?.();
+      dispatchItemEvent(elm, 'bar:click', null);
     }
 
-    this.updateStatusIfNeed(type);
+    this.updateStatusIfNeed(elm, type);
     this.updateClickStatus(type);
   }
 
-  private updateStatusIfNeed(type: BarActionType) {
-    const onStatusChanged = (isActivated: boolean) => {
-      if (this.isActivated !== isActivated) {
-        this.isActivated = isActivated;
-        this.config.onStatusChanged?.(isActivated);
+  private updateStatusIfNeed(elm: HTMLElement, type: BarActionType) {
+    const onStatusChanged = (isActive: boolean) => {
+      if (this.isActive !== isActive) {
+        this.isActive = isActive;
+        dispatchItemEvent(elm, 'bar:status-change', { isActive });
       }
     };
 
@@ -105,7 +100,7 @@ export class BarController {
   }
 
   private updateClickStatus(type: BarActionType) {
-    if (this.isActivated) {
+    if (this.isActive) {
       if (type === BarActionType.ACTIVATE) {
         this.isValidClick = true;
       } else if (type === BarActionType.MOVE) {

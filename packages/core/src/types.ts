@@ -16,10 +16,15 @@ export enum BarActionType {
   DEACTIVATE = 'deactivate',
 }
 
+export type ResizerItemController = {
+  destroy(): void;
+};
+
 export type ResizerItem = {
   type: ItemType;
   elm: HTMLElement;
   config: ResizerItemConfig;
+  controller: ResizerItemController;
 };
 
 export type ResizerItemConfig = {

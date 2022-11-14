@@ -1,7 +1,6 @@
 import { SizeRelatedInfo } from './types';
-
-import { BarActionScanResult } from './column-resizer/scan-bar-action';
-import { getNextSizeRelatedInfo } from './column-resizer/utils';
+import { getNextSizeRelatedInfo } from './utils';
+import { BarActionScanResult } from './utils/scan-bar-action';
 
 type ResizeResult = SizeRelatedInfo | BarActionScanResult;
 

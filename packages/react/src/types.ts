@@ -1,9 +1,4 @@
-import { RefObject } from 'react';
-import { ResizerItemConfig } from '@column-resizer/core';
-
-export type ChildProps = ResizerItemConfig & {
-  innerRef?: RefObject<HTMLDivElement>;
-};
+export type AnyFunc = (...params: any[]) => any;
 
 export type ExpandInteractiveArea = {
   top?: number;

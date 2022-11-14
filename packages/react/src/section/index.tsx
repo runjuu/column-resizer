@@ -1,11 +1,12 @@
-import { SectionController, ItemType } from '@column-resizer/core';
+import { ItemType, ResizerItemConfig } from '@column-resizer/core';
 import * as React from 'react';
 
-import { ChildProps } from '../types';
-import { useIsomorphicLayoutEffect, useForwardedRef, useColumnResizer } from '../hooks';
+import { useForwardedRef, useColumnResizer, useColumnResizerEvent } from '../hooks';
+import { RefObject } from 'react';
 
-export type SectionProps = Omit<ChildProps, 'context'> &
-  React.HTMLAttributes<HTMLDivElement> & {
+export type SectionProps = React.HTMLAttributes<HTMLDivElement> &
+  ResizerItemConfig & {
+    innerRef?: RefObject<HTMLDivElement>;
     onSizeChanged?: (currentSize: number) => void;
   };
 
@@ -22,24 +23,7 @@ export function Section({
   const ref = useForwardedRef<HTMLDivElement | null>(null, innerRef);
   const columnResizer = useColumnResizer();
 
-  useIsomorphicLayoutEffect(() => {
-    const elm = ref.current;
-
-    return new SectionController(columnResizer, {
-      defaultSize,
-      size,
-      disableResponsive,
-      minSize,
-      maxSize,
-      onSizeChanged,
-    }).setup(elm, ({ flexGrow, flexShrink, flexBasis }) => {
-      if (elm) {
-        elm.style.flexGrow = `${flexGrow}`;
-        elm.style.flexShrink = `${flexShrink}`;
-        elm.style.flexBasis = `${flexBasis}px`;
-      }
-    });
-  }, [columnResizer, defaultSize, size, disableResponsive, minSize, maxSize, onSizeChanged, ref]);
+  useColumnResizerEvent(ref, 'section:size-change', (e) => onSizeChanged?.(e.detail.size));
 
   return (
     <div

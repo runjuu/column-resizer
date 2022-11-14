@@ -2,7 +2,7 @@ import { ColumnResizer, ColumnResizerConfig } from '@column-resizer/core';
 import * as React from 'react';
 
 import { ColumnResizerContext } from '../context';
-import { useIsomorphicLayoutEffect, useForwardedRef } from '../hooks';
+import { useIsomorphicLayoutEffect, useForwardedRef, useInitColumnResizer } from '../hooks';
 
 import { StyledContainer } from './styled';
 
@@ -17,17 +17,19 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
     ref,
   ) => {
     const containerRef = useForwardedRef<HTMLDivElement | null>(null, ref);
-    const controller = React.useMemo(
-      () => new ColumnResizer({ vertical, onActivate, beforeApplyResizer, afterResizing }),
-      [vertical, onActivate, beforeApplyResizer, afterResizing],
-    );
+    const columnResizer = useInitColumnResizer({
+      vertical,
+      onActivate,
+      beforeApplyResizer,
+      afterResizing,
+    });
 
-    useIsomorphicLayoutEffect(() => controller.refresh(containerRef.current), [controller]);
-    React.useImperativeHandle(controllerRef, () => controller, [controller]);
+    useIsomorphicLayoutEffect(() => columnResizer.refresh(containerRef.current), [columnResizer]);
+    React.useImperativeHandle(controllerRef, () => columnResizer, [columnResizer]);
 
     return (
-      <ColumnResizerContext.Provider value={controller}>
-        <StyledContainer ref={containerRef} vertical={controller.config.vertical} {...props} />
+      <ColumnResizerContext.Provider value={columnResizer}>
+        <StyledContainer ref={containerRef} vertical={columnResizer.config.vertical} {...props} />
       </ColumnResizerContext.Provider>
     );
   },
