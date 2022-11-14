@@ -4,15 +4,10 @@
   "description": "An intuitive React component set for multi-column resizing",
   "license": "MIT",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LeetCode-OpenSource/react-simple-resizer.git"
-  },
-  "bugs": {
-    "url": "https://github.com/LeetCode-OpenSource/react-simple-resizer/issues"
-  },
-  "homepage": "https://github.com/LeetCode-OpenSource/react-simple-resizer#readme",
-  "author": "LeetCode front-end team",
+  "repository": "github:Runjuu/react-simple-resizer",
+  "bugs": "https://github.com/Runjuu/react-simple-resizer/issues",
+  "homepage": "https://github.com/Runjuu/react-simple-resizer#readme",
+  "author": "Runjuu",
   "keywords": [
     "react",
     "resize",
