@@ -3,7 +3,7 @@ import { filter, map, observeOn, share, tap } from 'rxjs/operators';
 
 import { BarAction, BarActionType, ItemType, ResizerItem, SizeRelatedInfo } from './types';
 import { Resizer } from './resizer';
-import { BarController, SectionController } from './item-controllers';
+import { BarController, SectionController, DispatchBarAction } from './item-controllers';
 import {
   parseResizerItems,
   isSolidItem,
@@ -38,7 +38,7 @@ export class ColumnResizer {
       this.items = parseResizerItems(container).map((item) => {
         switch (item.type) {
           case ItemType.BAR:
-            return { ...item, controller: new BarController(this, item.elm) };
+            return { ...item, controller: new BarController(item.elm, this.dispatchBarAction) };
           case ItemType.SECTION:
             return { ...item, controller: new SectionController(this, item.elm, item.config) };
         }
@@ -50,12 +50,10 @@ export class ColumnResizer {
 
   on = watchItemEvent;
 
-  triggerBarAction(elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) {
-    this.barActions$.next({
-      ...action,
-      barIndex: this.items.findIndex((item) => item.elm === elm),
-    });
-  }
+  private dispatchBarAction: DispatchBarAction = (elm, action) => {
+    const barIndex = this.items.findIndex((item) => item.elm === elm);
+    this.barActions$.next({ ...action, barIndex });
+  };
 
   readonly sizeRelatedInfo$ = merge(
     this.sizeRelatedInfoAction$,

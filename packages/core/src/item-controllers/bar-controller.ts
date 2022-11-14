@@ -1,17 +1,18 @@
 import { Subscription } from 'rxjs';
 
-import { BarActionType, Coordinate, ResizerItemController } from '../types';
+import { BarAction, BarActionType, Coordinate, ResizerItemController } from '../types';
 import { DISABLE_PASSIVE } from '../utils';
 
-import { ColumnResizer } from '../column-resizer';
 import { dispatchItemEvent } from '../item-events';
+
+export type DispatchBarAction = (elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) => void;
 
 export class BarController implements ResizerItemController {
   private isActive = false;
   private isValidClick = true;
   private subscription = new Subscription();
 
-  constructor(private readonly controller: ColumnResizer, container: HTMLElement) {
+  constructor(container: HTMLElement, private readonly dispatchBarAction: DispatchBarAction) {
     const onMouseDown = this.triggerMouseAction(container, BarActionType.ACTIVATE);
     const onMouseMove = this.triggerMouseAction(container, BarActionType.MOVE);
     const onMouseUp = this.triggerMouseAction(container, BarActionType.DEACTIVATE);
@@ -71,7 +72,7 @@ export class BarController implements ResizerItemController {
 
   private triggerAction(elm: HTMLElement, type: BarActionType, coordinate: Coordinate) {
     if (this.isActive || type === BarActionType.ACTIVATE) {
-      this.controller.triggerBarAction(elm, { type, coordinate });
+      this.dispatchBarAction(elm, { type, coordinate });
     }
 
     if (this.isActive && this.isValidClick && type === BarActionType.DEACTIVATE) {
