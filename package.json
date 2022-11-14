@@ -4,9 +4,9 @@
   "description": "An intuitive React component set for multi-column resizing",
   "license": "MIT",
   "private": true,
-  "repository": "github:Runjuu/react-simple-resizer",
-  "bugs": "https://github.com/Runjuu/react-simple-resizer/issues",
-  "homepage": "https://github.com/Runjuu/react-simple-resizer#readme",
+  "repository": "github:Runjuu/column-resizer",
+  "bugs": "https://github.com/Runjuu/column-resizer/issues",
+  "homepage": "https://github.com/Runjuu/column-resizer#readme",
   "author": "Runjuu",
   "keywords": [
     "react",

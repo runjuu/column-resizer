@@ -2,9 +2,9 @@
   "name": "@column-resizer/react",
   "version": "0.0.2",
   "license": "MIT",
-  "repository": "github:Runjuu/react-simple-resizer",
-  "bugs": "https://github.com/Runjuu/react-simple-resizer/issues",
-  "homepage": "https://github.com/Runjuu/react-simple-resizer#readme",
+  "repository": "github:Runjuu/column-resizer",
+  "bugs": "https://github.com/Runjuu/column-resizer/issues",
+  "homepage": "https://github.com/Runjuu/column-resizer#readme",
   "author": "Runjuu",
   "keywords": [
     "react",
