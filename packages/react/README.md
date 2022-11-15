@@ -63,13 +63,15 @@ import { Container } from '@column-resizer/react';
 #### Props
 
 ```typescript
-import { HTMLAttributes } from 'react';
+import { ColumnResizer } from '@column-resizer/react';
+import { HTMLAttributes, RefObject } from 'react';
 
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   vertical?: boolean;
   onActivate?: () => void;
   beforeApplyResizer?: (resizer: Resizer) => void;
   afterResizing?: () => void;
+  columnResizerRef?: RefObject<ColumnResizer>
 }
 ```
 
@@ -89,12 +91,10 @@ Used to [customize resize behavior](#customize-resize-behavior). In this method,
 
 Triggered after a <a name="resizing-section">**resizing section**</a> is completed, which means that it will be triggered after [onMouseUp](https://developer.mozilla.org/en-US/docs/Web/Events/mouseup) and [onTouchEnd](https://developer.mozilla.org/en-US/docs/Web/Events/touchend) events. If you want to do something after size of section has changed, use [`onSizeChanged`](#onsizechanged) props on the [`Section`](#section-) instead.
 
-#### Instance properties
+#### ColumnResizer properties
 
 ```typescript
-import React from 'react';
-
-class Container extends React.PureComponent<ContainerProps> {
+class ColumnResizer {
   public getResizer(): Resizer;
   public applyResizer(resizer: Resizer): void;
 }
@@ -119,7 +119,7 @@ import { Section } from '@column-resizer/react';
 #### Props
 
 ```typescript
-import { HTMLAttributes, RefObject } from 'react';
+import { HTMLAttributes } from 'react';
 
 interface SectionProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
@@ -128,7 +128,6 @@ interface SectionProps extends HTMLAttributes<HTMLDivElement> {
   minSize?: number;
   disableResponsive?: boolean;
   onSizeChanged?: (currentSize: number) => void;
-  innerRef?: RefObject<HTMLDivElement>;
 }
 ```
 
@@ -156,10 +155,6 @@ Each `Section` is responsive as default, unless `size` exists. The `responsive` 
 
 Will be triggered each time its size has changed.
 
-##### `innerRef`
-
-Used to get the actual DOM ref of `Section`.
-
 ---
 
 ### \<Bar \/\>
@@ -171,7 +166,7 @@ import { Bar } from '@column-resizer/react';
 #### Props
 
 ```typescript
-import { HTMLAttributes, RefObject } from 'react';
+import { HTMLAttributes } from 'react';
 
 interface ExpandInteractiveArea {
   top?: number;
@@ -185,7 +180,6 @@ interface BarProps extends HTMLAttributes<HTMLDivElement> {
   expandInteractiveArea?: ExpandInteractiveArea;
   onStatusChanged?: (isActive: boolean) => void;
   onClick?: () => void;
-  innerRef?: RefObject<HTMLDivElement>;
 }
 ```
 
@@ -204,10 +198,6 @@ Triggered when the state of `Bar` has changed.
 ##### `onClick`
 
 Triggered if there's no "move" events. The main difference between it and original `onClick` event is that **there is no parameters** on _this_ `onClick`. You could also use it as a touch event on mobile platform, without 300ms click delay.
-
-##### `innerRef`
-
-Used to get the actual DOM ref of `Bar`.
 
 ## Customize resize behavior
 
