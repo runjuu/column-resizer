@@ -8,8 +8,6 @@ export enum ItemType {
   SECTION = 'SECTION',
 }
 
-export type CancelLogic = () => void;
-
 export type Trend = -1 | 0 | 1;
 
 export enum BarActionType {
@@ -19,22 +17,9 @@ export enum BarActionType {
 }
 
 export abstract class ColumnInstance {
-  protected constructor(
-    public readonly type: ItemType,
-    public readonly elm: HTMLElement,
-    public readonly config: ResizerItemConfig,
-  ) {}
-
+  protected constructor(public readonly type: ItemType, public readonly elm: HTMLElement) {}
   destroy() {}
 }
-
-export type ResizerItemConfig = {
-  size?: number;
-  defaultSize?: number;
-  maxSize?: number;
-  minSize?: number;
-  disableResponsive?: boolean;
-};
 
 export type BarAction = {
   type: BarActionType;

@@ -1,3 +1,5 @@
+import { ColumnBarConfig } from '@column-resizer/core';
+
 import * as React from 'react';
 
 import { useColumnResizer, useColumnResizerEvent, useForwardedRef } from '../hooks';
@@ -5,13 +7,13 @@ import { StyledInteractiveArea, ExpandInteractiveArea } from './styled';
 
 export type { ExpandInteractiveArea };
 
-export type BarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> & {
-  size: number;
-  expandInteractiveArea?: ExpandInteractiveArea;
-  innerRef?: React.RefObject<HTMLDivElement>;
-  onClick?: () => void;
-  onStatusChanged?: (isActive: boolean) => void;
-};
+export type BarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> &
+  ColumnBarConfig & {
+    expandInteractiveArea?: ExpandInteractiveArea;
+    innerRef?: React.RefObject<HTMLDivElement>;
+    onClick?: () => void;
+    onStatusChanged?: (isActive: boolean) => void;
+  };
 
 export function Bar({
   children,

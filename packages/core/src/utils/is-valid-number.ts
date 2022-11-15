@@ -1,3 +1,3 @@
-export function isValidNumber(num?: number): num is number {
-  return typeof num === 'number' && num === num;
+export function isValidNumber(num?: unknown): num is number {
+  return Number.isFinite(num) && (num as number) > 0;
 }

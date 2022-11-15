@@ -81,7 +81,7 @@ export function createBarStore(config: ScanBarActionConfig) {
       return () => callbackSet.delete(callback);
     },
 
-    clearSubscription() {
+    unsubscribeAll() {
       callbackSet.clear();
     },
   };

@@ -1,18 +1,27 @@
-import { BarActionType, ItemType, SizeRelatedInfo, ResizerItemConfig } from './types';
+import { BarActionType, ItemType, SizeRelatedInfo } from './types';
 import { Resizer } from './resizer';
-import { ColumnSection, ColumnBar, DispatchBarAction } from './column-items';
 import {
-  parseResizerItems,
-  isSolidItem,
-  isDisabledResponsive,
+  ColumnBar,
+  ColumnBarConfig,
+  ColumnSection,
+  ColumnSectionConfig,
+  DispatchBarAction,
+} from './column-items';
+import {
+  BarActionScanResult,
   calculateCoordinateOffset,
   collectSizeRelatedInfo,
-  BarActionScanResult,
   ColumnItemsCache,
-  watchResizerEvent,
   createBarStore,
-  isValidNumber,
+  isDisabledResponsive,
+  isSolidItem,
+  parseResizerItems,
+  resizerItemAttributes,
+  ResizerItems,
+  watchResizerEvent,
 } from './utils';
+
+export type { ColumnSectionConfig, ColumnBarConfig };
 
 export type ColumnResizerConfig = {
   vertical: boolean;
@@ -22,6 +31,32 @@ export type ColumnResizerConfig = {
 };
 
 export class ColumnResizer {
+  styles = {
+    container: <T>(style?: T) =>
+      ({
+        ...style,
+        display: 'flex',
+        flexDirection: this.direction,
+      } as const),
+
+    section: <T>(config: ColumnSectionConfig, style?: T) => ({
+      ...style,
+      ...ColumnSection.getStyle(config, this.config.vertical),
+    }),
+
+    bar: <T>(config: ColumnBarConfig, style?: T) => ({
+      ...style,
+      ...ColumnBar.getStyle(config),
+    }),
+  };
+
+  attributes = {
+    bar: resizerItemAttributes(ItemType.BAR),
+    section: resizerItemAttributes(ItemType.SECTION),
+  };
+
+  on = watchResizerEvent;
+
   private itemsCache = new ColumnItemsCache();
 
   private barStore = createBarStore({
@@ -29,48 +64,17 @@ export class ColumnResizer {
     getSizeRelatedInfo: () => this.makeSizeInfos(),
   });
 
-  styles = {
-    container: <T>(style?: T) =>
-      ({
-        display: 'flex',
-        flexDirection: this.config.vertical ? 'column' : 'row',
-        ...style,
-      } as const),
+  private get axis() {
+    return this.config.vertical ? 'y' : 'x';
+  }
 
-    section: <T>({ maxSize, minSize }: ResizerItemConfig, style?: T) => {
-      const toCSSSize = (size?: number) => (isValidNumber(size) ? `${size}px` : undefined);
+  private get dimension() {
+    return this.config.vertical ? 'height' : 'width';
+  }
 
-      return {
-        overflow: 'hidden',
-        [this.config.vertical ? 'maxHeight' : 'maxWidth']: toCSSSize(maxSize),
-        [this.config.vertical ? 'minHeight' : 'minWidth']: toCSSSize(minSize),
-        ...style,
-      };
-    },
-
-    bar: <T>({ size }: ResizerItemConfig, style?: T) => ({
-      flex: `0 0 ${size}px`,
-      ...style,
-    }),
-  };
-
-  attributes = {
-    bar(config: Pick<Required<ResizerItemConfig>, 'size'>) {
-      return {
-        'data-item-type': ItemType.BAR,
-        'data-item-config': JSON.stringify(config),
-      };
-    },
-
-    section(config: ResizerItemConfig) {
-      return {
-        'data-item-type': ItemType.SECTION,
-        'data-item-config': JSON.stringify(config),
-      };
-    },
-  };
-
-  on = watchResizerEvent;
+  private get direction() {
+    return this.config.vertical ? 'column' : 'row';
+  }
 
   constructor(public readonly config: Readonly<ColumnResizerConfig>) {
     this.barStore.subscribe((state) => {
@@ -81,28 +85,25 @@ export class ColumnResizer {
 
   refresh(container: HTMLElement | null) {
     if (container) {
-      Object.assign(container.style, this.styles.container());
-
       this.itemsCache.update(
         parseResizerItems(container).map((item) => {
           switch (item.type) {
             case ItemType.BAR:
-              Object.assign(item.elm.style, this.styles.bar(item.config));
-              return new ColumnBar(item.elm, this.dispatchBarAction);
+              return new ColumnBar(item, this.dispatchBarAction);
             case ItemType.SECTION:
-              Object.assign(item.elm.style, this.styles.section(item.config));
-              return new ColumnSection(item.elm, item.config);
+              return new ColumnSection(item);
           }
         }),
       );
 
+      this.initStyles(container, this.itemsCache.getItems());
       this.sizeRelatedInfoChange(this.makeSizeInfos());
     }
   }
 
   destroy() {
     this.itemsCache.reset();
-    this.barStore.clearSubscription();
+    this.barStore.unsubscribeAll();
   }
 
   getResizer(): Resizer {
@@ -111,14 +112,6 @@ export class ColumnResizer {
 
   applyResizer(resizer: Resizer): void {
     this.sizeRelatedInfoChange(resizer.getResult());
-  }
-
-  private get axis() {
-    return this.config.vertical ? 'y' : 'x';
-  }
-
-  private get dimension() {
-    return this.config.vertical ? 'height' : 'width';
   }
 
   private dispatchBarAction: DispatchBarAction = (elm, action) => {
@@ -169,17 +162,42 @@ export class ColumnResizer {
   private makeSizeInfos(): SizeRelatedInfo {
     const { collect, getResult } = collectSizeRelatedInfo();
 
-    this.itemsCache.getItems().forEach(({ config, elm }) => {
-      collect({
-        elm,
-        maxSize: config.maxSize,
-        minSize: config.minSize,
-        disableResponsive: isDisabledResponsive(config),
-        isSolid: isSolidItem(config),
-        currentSize: elm.getBoundingClientRect()[this.dimension],
-      });
+    this.itemsCache.getItems().forEach((item) => {
+      if (item instanceof ColumnBar) {
+        collect({
+          elm: item.elm,
+          disableResponsive: true,
+          isSolid: true,
+          currentSize: item.elm.getBoundingClientRect()[this.dimension],
+        });
+      }
+
+      if (item instanceof ColumnSection) {
+        collect({
+          elm: item.elm,
+          maxSize: item.config.maxSize,
+          minSize: item.config.minSize,
+          disableResponsive: isDisabledResponsive(item.config),
+          isSolid: isSolidItem(item.config),
+          currentSize: item.elm.getBoundingClientRect()[this.dimension],
+        });
+      }
     });
 
     return getResult();
+  }
+
+  private initStyles(container: HTMLElement, items: ResizerItems) {
+    Object.assign(container.style, this.styles.container());
+
+    items.forEach((item) => {
+      if (item instanceof ColumnBar) {
+        Object.assign(item.elm.style, this.styles.bar(item.config));
+      }
+
+      if (item instanceof ColumnSection) {
+        Object.assign(item.elm.style, this.styles.section(item.config));
+      }
+    });
   }
 }

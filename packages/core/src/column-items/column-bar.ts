@@ -1,32 +1,49 @@
-import { BarAction, BarActionType, Coordinate, ItemType, ColumnInstance } from '../types';
-import { DISABLE_PASSIVE, dispatchResizerEvent } from '../utils';
+import { BarAction, BarActionType, Coordinate, ColumnInstance, ItemType } from '../types';
+import {
+  DISABLE_PASSIVE,
+  dispatchResizerEvent,
+  isValidNumber,
+  ParseResizerItemsResult,
+} from '../utils';
 
 export type DispatchBarAction = (elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) => void;
 
+export type ColumnBarConfig = {
+  size: number;
+};
+
 export class ColumnBar extends ColumnInstance {
+  static getStyle({ size }: ColumnBarConfig) {
+    return {
+      flex: `0 0 ${size}px`,
+    };
+  }
+
   private isActive = false;
   private isValidClick = true;
+  readonly config: ColumnBarConfig;
 
   constructor(
-    public readonly elm: HTMLElement,
+    item: ParseResizerItemsResult[0],
     private readonly dispatchBarAction: DispatchBarAction,
   ) {
-    super(ItemType.BAR, elm, {});
+    super(ItemType.BAR, item.elm);
+    this.config = getConfig(item);
 
-    const onMouseDown = this.triggerMouseAction(elm, BarActionType.ACTIVATE);
-    const onMouseMove = this.triggerMouseAction(elm, BarActionType.MOVE);
-    const onMouseUp = this.triggerMouseAction(elm, BarActionType.DEACTIVATE);
+    const onMouseDown = this.triggerMouseAction(this.elm, BarActionType.ACTIVATE);
+    const onMouseMove = this.triggerMouseAction(this.elm, BarActionType.MOVE);
+    const onMouseUp = this.triggerMouseAction(this.elm, BarActionType.DEACTIVATE);
 
-    const onTouchStart = this.triggerTouchAction(elm, BarActionType.ACTIVATE);
-    const onTouchMove = this.triggerTouchAction(elm, BarActionType.MOVE);
-    const onTouchEnd = this.triggerTouchAction(elm, BarActionType.DEACTIVATE);
-    const onTouchCancel = this.triggerTouchAction(elm, BarActionType.DEACTIVATE);
+    const onTouchStart = this.triggerTouchAction(this.elm, BarActionType.ACTIVATE);
+    const onTouchMove = this.triggerTouchAction(this.elm, BarActionType.MOVE);
+    const onTouchEnd = this.triggerTouchAction(this.elm, BarActionType.DEACTIVATE);
+    const onTouchCancel = this.triggerTouchAction(this.elm, BarActionType.DEACTIVATE);
 
-    elm.addEventListener('mousedown', onMouseDown);
+    this.elm.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
-    elm.addEventListener('touchstart', onTouchStart, DISABLE_PASSIVE);
+    this.elm.addEventListener('touchstart', onTouchStart, DISABLE_PASSIVE);
     document.addEventListener('touchmove', onTouchMove, DISABLE_PASSIVE);
     document.addEventListener('touchend', onTouchEnd);
     document.addEventListener('touchcancel', onTouchCancel);
@@ -34,11 +51,11 @@ export class ColumnBar extends ColumnInstance {
     this.destroy = () => {
       super.destroy();
 
-      elm.removeEventListener('mousedown', onMouseDown);
+      this.elm.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
 
-      elm.removeEventListener('touchstart', onTouchStart);
+      this.elm.removeEventListener('touchstart', onTouchStart);
       document.removeEventListener('touchmove', onTouchMove);
       document.removeEventListener('touchend', onTouchEnd);
       document.removeEventListener('touchcancel', onTouchCancel);
@@ -107,4 +124,12 @@ export class ColumnBar extends ColumnInstance {
       }
     }
   }
+}
+
+function getConfig({ config }: ParseResizerItemsResult[0]): ColumnBarConfig {
+  const { size } = config;
+
+  return {
+    size: isValidNumber(size) ? size : 10,
+  };
 }

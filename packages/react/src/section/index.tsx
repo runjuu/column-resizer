@@ -1,11 +1,11 @@
-import { ResizerItemConfig } from '@column-resizer/core';
+import { ColumnSectionConfig } from '@column-resizer/core';
 import * as React from 'react';
 
 import { useForwardedRef, useColumnResizer, useColumnResizerEvent } from '../hooks';
 import { RefObject } from 'react';
 
 export type SectionProps = React.HTMLAttributes<HTMLDivElement> &
-  ResizerItemConfig & {
+  ColumnSectionConfig & {
     innerRef?: RefObject<HTMLDivElement>;
     onSizeChanged?: (currentSize: number) => void;
   };

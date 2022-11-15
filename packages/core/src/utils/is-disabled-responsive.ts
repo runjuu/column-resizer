@@ -1,11 +1,11 @@
-import { ResizerItemConfig } from '../types';
+import { ColumnSectionConfig } from '../column-items';
 
 import { isSolidItem } from './is-solid-item';
 
-export function isDisabledResponsive(resizerItemConfig: ResizerItemConfig): boolean {
-  const { disableResponsive } = resizerItemConfig;
+export function isDisabledResponsive(config: ColumnSectionConfig): boolean {
+  const { disableResponsive } = config;
 
-  if (isSolidItem(resizerItemConfig) && disableResponsive === undefined) {
+  if (isSolidItem(config) && disableResponsive === undefined) {
     return true;
   } else {
     return !!disableResponsive;
