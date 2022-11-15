@@ -46,9 +46,9 @@ export default () => (
 
 We have created several demos on CodeSandbox, check demos below:
 
-- [Simple demo](https://codesandbox.io/s/qkw1rxxq29)
-- [Make Section collapsible](https://codesandbox.io/s/1vpy7kz5j3)
-- [Multiple Section linkage effects](https://codesandbox.io/s/r51pv3qzpm)
+- [Simple demo](https://codesandbox.io/s/simple-resizer-demo-m25wbi?file=/src/index.tsx)
+- [Make Section collapsible](https://codesandbox.io/s/make-section-collapsible-vv5z9g?file=/src/index.tsx)
+- [Multiple Section linkage effects](https://codesandbox.io/s/multiple-section-linkage-effects-wrjyxf?file=/src/index.tsx)
 
 ## Components
 
@@ -215,7 +215,7 @@ If you want to customize behavior of resizing, then you have to know how to use 
 
 There is two ways to get the `Resizer`. One is [`beforeApplyResizer`](#beforeapplyresizer) defined on the **props** of `Container`, and the other is [`getResizer`](#getresizer) defined on the **instance** of `Container`.
 
-Beware that you need **manually** calling [`applyResizer`](#applyresizer) every time you want to apply the effect, except in `beforeApplyResizer`. Check demo [Make Section collapsible](https://codesandbox.io/s/1vpy7kz5j3) to see how `applyResizer` is used.
+Beware that you need **manually** calling [`applyResizer`](#applyresizer) every time you want to apply the effect, except in `beforeApplyResizer`. Check demo [Make Section collapsible](https://codesandbox.io/s/make-section-collapsible-vv5z9g?file=/src/index.tsx) to see how `applyResizer` is used.
 
 ```typescript
 interface Resizer {
