@@ -11,7 +11,7 @@ function beforeApplyResizer(resizer: Resizer): void {
 }
 
 export class CollapsibleSection extends React.PureComponent {
-  readonly controllerRef = React.createRef<ColumnResizer>();
+  readonly columnResizerRef = React.createRef<ColumnResizer>();
 
   render() {
     return (
@@ -19,7 +19,7 @@ export class CollapsibleSection extends React.PureComponent {
         <h2>Collapsible section demo</h2>
         <Container
           className="container"
-          controllerRef={this.controllerRef}
+          columnResizerRef={this.columnResizerRef}
           beforeApplyResizer={beforeApplyResizer}
         >
           <Section className="section" />
@@ -31,7 +31,7 @@ export class CollapsibleSection extends React.PureComponent {
   }
 
   private onBarClick = () => {
-    const controller = this.controllerRef.current;
+    const controller = this.columnResizerRef.current;
 
     if (controller) {
       const resizer = controller.getResizer();
