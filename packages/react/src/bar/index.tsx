@@ -8,7 +8,7 @@ import { StyledInteractiveArea, ExpandInteractiveArea } from './styled';
 export type { ExpandInteractiveArea };
 
 export type BarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> &
-  ColumnBarConfig & {
+  Partial<ColumnBarConfig> & {
     expandInteractiveArea?: ExpandInteractiveArea;
     innerRef?: React.RefObject<HTMLDivElement>;
     onClick?: () => void;
@@ -21,7 +21,7 @@ export function Bar({
   innerRef,
   expandInteractiveArea,
   onStatusChanged,
-  size,
+  size = 10,
   style,
   ...props
 }: BarProps) {
