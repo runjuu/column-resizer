@@ -1,4 +1,4 @@
-import { BarActionType, ItemType, SizeRelatedInfo } from './types';
+import { BarActionType, ItemType, SizeRelatedInfo, ResizerItemConfig } from './types';
 import { Resizer } from './resizer';
 import { ColumnSection, ColumnBar, DispatchBarAction } from './column-items';
 import {
@@ -11,6 +11,7 @@ import {
   ColumnItemsCache,
   watchResizerEvent,
   createBarStore,
+  isValidNumber,
 } from './utils';
 
 export type ColumnResizerConfig = {
@@ -28,6 +29,49 @@ export class ColumnResizer {
     getSizeRelatedInfo: () => this.makeSizeInfos(),
   });
 
+  styles = {
+    container: <T>(style?: T) =>
+      ({
+        display: 'flex',
+        flexDirection: this.config.vertical ? 'column' : 'row',
+        ...style,
+      } as const),
+
+    section: <T>({ maxSize, minSize }: ResizerItemConfig, style?: T) => {
+      const toCSSSize = (size?: number) => (isValidNumber(size) ? `${size}px` : undefined);
+
+      return {
+        overflow: 'hidden',
+        [this.config.vertical ? 'maxHeight' : 'maxWidth']: toCSSSize(maxSize),
+        [this.config.vertical ? 'minHeight' : 'minWidth']: toCSSSize(minSize),
+        ...style,
+      };
+    },
+
+    bar: <T>({ size }: ResizerItemConfig, style?: T) => ({
+      flex: `0 0 ${size}px`,
+      ...style,
+    }),
+  };
+
+  attributes = {
+    bar(config: Pick<Required<ResizerItemConfig>, 'size'>) {
+      return {
+        'data-item-type': ItemType.BAR,
+        'data-item-config': JSON.stringify(config),
+      };
+    },
+
+    section(config: ResizerItemConfig) {
+      return {
+        'data-item-type': ItemType.SECTION,
+        'data-item-config': JSON.stringify(config),
+      };
+    },
+  };
+
+  on = watchResizerEvent;
+
   constructor(public readonly config: Readonly<ColumnResizerConfig>) {
     this.barStore.subscribe((state) => {
       this.monitorBarStatusChanges(state);
@@ -35,16 +79,18 @@ export class ColumnResizer {
     });
   }
 
-  on = watchResizerEvent;
-
   refresh(container: HTMLElement | null) {
     if (container) {
+      Object.assign(container.style, this.styles.container());
+
       this.itemsCache.update(
         parseResizerItems(container).map((item) => {
           switch (item.type) {
             case ItemType.BAR:
+              Object.assign(item.elm.style, this.styles.bar(item.config));
               return new ColumnBar(item.elm, this.dispatchBarAction);
             case ItemType.SECTION:
+              Object.assign(item.elm.style, this.styles.section(item.config));
               return new ColumnSection(item.elm, item.config);
           }
         }),
