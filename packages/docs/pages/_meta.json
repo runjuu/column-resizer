@@ -1,0 +1,16 @@
+{
+  "index": "Introduction",
+  "getting-started": "Getting Started",
+  "examples": "Examples",
+  "-- integrations --": {
+    "type": "separator",
+    "title": "Integrations"
+  },
+  "core": "Core",
+  "react": "React",
+  "-- more --": {
+    "type": "separator",
+    "title": "More"
+  },
+  "migration-from-react-simple-resizer": "Migration From React Simple Resizer"
+}
