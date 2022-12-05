@@ -1,0 +1,61 @@
+import { Tab, Tabs } from 'nextra-theme-docs';
+import { Container, Section, Bar } from '@column-resizer/react';
+
+import { Center } from '../../components';
+
+# Quick Start
+
+<div className="steps-container">
+
+### Installation
+
+{/* prettier-ignore */}
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab>
+    ```bash
+    pnpm i @column-resizer/react
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    npm i @column-resizer/react
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    yarn add @column-resizer/react
+    ```
+  </Tab>
+</Tabs>
+
+### Ready to Go!
+
+Here is a minimal example for two-column layout:
+
+```jsx filename="app.jsx"
+import React from 'react';
+import { Container, Section, Bar } from '@column-resizer/react';
+
+export default () => (
+  <Container style={{ height: '100px', background: 'rgba(50%, 50%, 50%, 0.5)' }}>
+    <Section minSize={50} />
+    <Bar size={10} style={{ background: 'currentColor', cursor: 'col-resize' }} />
+    <Section minSize={100} />
+  </Container>
+);
+```
+
+<Container
+  className="nx-rounded-xl"
+  style={{ height: '100px', background: 'rgba(50%, 50%, 50%, 0.5)' }}
+>
+  <Section className="font-bold text-sm" minSize={50}>
+    <Center>Min Size 50px</Center>
+  </Section>
+  <Bar size={10} style={{ background: '#888888', cursor: 'col-resize' }} />
+  <Section className="font-bold text-sm" minSize={100}>
+    <Center>Min Size 100px</Center>
+  </Section>
+</Container>
+
+</div>
