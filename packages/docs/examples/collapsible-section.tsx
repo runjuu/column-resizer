@@ -16,15 +16,18 @@ export class CollapsibleSection extends React.PureComponent {
   render() {
     return (
       <section>
-        <h2>Collapsible section demo</h2>
         <Container
-          className="container"
+          className="h-[50vh] whitespace-nowrap"
           columnResizerRef={this.columnResizerRef}
           beforeApplyResizer={beforeApplyResizer}
         >
-          <Section className="section" />
-          <Bar size={10} className="bar" onClick={this.onBarClick} />
-          <Section className="section" />
+          <Section className="flex items-center justify-center bg-[#80808080]" />
+          <Bar
+            size={10}
+            className="transition bg-[#808080CF] hover:bg-[#808080] cursor-col-resize"
+            onClick={this.onBarClick}
+          />
+          <Section className="flex items-center justify-center bg-[#80808080]" />
         </Container>
       </section>
     );

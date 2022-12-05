@@ -19,13 +19,12 @@ function onResizing(resizer: Resizer): void {
 
 export const InteractiveSection = () => (
   <section>
-    <h2>Interactive section demo</h2>
-    <Container className="container" beforeApplyResizer={onResizing}>
-      <Section className="section" />
-      <Bar size={10} className="bar" />
-      <Section className="section" />
-      <Bar size={10} className="bar" />
-      <Section className="section" />
+    <Container className="h-[50vh] whitespace-nowrap" beforeApplyResizer={onResizing}>
+      <Section className="flex items-center justify-center bg-[#80808080]" />
+      <Bar size={10} className="transition bg-[#808080CF] hover:bg-[#808080] cursor-col-resize" />
+      <Section className="flex items-center justify-center bg-[#80808080]" />
+      <Bar size={10} className="transition bg-[#808080CF] hover:bg-[#808080] cursor-col-resize" />
+      <Section className="flex items-center justify-center bg-[#80808080]" />
     </Container>
   </section>
 );
