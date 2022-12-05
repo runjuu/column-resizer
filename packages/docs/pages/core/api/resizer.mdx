@@ -1,0 +1,46 @@
+# Resizer
+
+```typescript
+interface Resizer {
+  resizeSection: (
+    indexOfSection: number,
+    config: { toSize: number; preferMoveLeftBar?: boolean },
+  ) => void;
+  moveBar: (indexOfBar: number, config: { withOffset: number }) => void;
+  discard: () => void;
+  isSectionResized: (indexOfSection: number) => boolean;
+  isBarActivated: (indexOfBar: number) => boolean;
+  getSectionSize: (indexOfSection: number) => number | -1;
+  getTotalSize: () => number;
+}
+```
+
+##### `resizeSection`
+
+Used to set size of the nth `Section`.
+In multi-column layout, there're several `Bar`s could change the `Section`'s size. Therefore, you could try to use the left side `Bar` to resizing by setting `preferMoveLeftBar`.
+
+##### `moveBar`
+
+Used to move the nth `Bar` to resizing.
+If the value of A is negative, move `Bar` to the left. When [`vertical`](#vertical) is `true`, move up.
+
+##### `discard`
+
+Discard resizing at this time.
+
+##### `isSectionResized`
+
+Used to determine whether the nth `Section`'s size is changed at current [resizing section](#user-content-resizing-section) or not.
+
+##### `isBarActivated`
+
+Used to determine whether the nth `Bar` is active or not.
+
+##### `getSectionSize`
+
+Used to get size of the nth `Section`. if there is no nth `Section`, return `-1`.
+
+##### `getTotalSize`
+
+Used to get total size of all `Section`.

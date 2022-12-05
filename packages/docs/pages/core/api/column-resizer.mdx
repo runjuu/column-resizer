@@ -1,0 +1,16 @@
+# ColumnResizer
+
+```typescript
+class ColumnResizer {
+  public getResizer(): Resizer;
+  public applyResizer(resizer: Resizer): void;
+}
+```
+
+##### `getResizer`
+
+Used to get newest [`Resizer`](#customize-resize-behavior). But any change won't apply unless you pass the `Resizer` to `applyResizer`.
+
+##### `applyResizer`
+
+Apply the passed `Resizer` to `Container`.

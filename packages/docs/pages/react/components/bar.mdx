@@ -1,1 +1,35 @@
 # Bar
+
+```typescript
+import React from "react"
+
+interface ExpandInteractiveArea {
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+}
+
+interface BarProps extends React.HTMLAttributes<HTMLDivElement> {
+  size: number;
+  expandInteractiveArea?: ExpandInteractiveArea;
+  onStatusChanged?: (isActive: boolean) => void;
+  onClick?: () => void;
+}
+```
+
+##### `size`
+
+Required, used to set the size of `Bar`.
+
+##### `expandInteractiveArea`
+
+Used to expand interactive area of `Bar`.
+
+##### `onStatusChanged`
+
+Triggered when the state of `Bar` has changed.
+
+##### `onClick`
+
+Triggered if there's no "move" events. The main difference between it and original `onClick` event is that **there is no parameters** on _this_ `onClick`. You could also use it as a touch event on mobile platform, without 300ms click delay.

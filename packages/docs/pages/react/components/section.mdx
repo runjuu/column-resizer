@@ -1,1 +1,38 @@
 # Section
+
+```typescript
+import React from "react"
+
+interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
+  size?: number;
+  defaultSize?: number;
+  maxSize?: number;
+  minSize?: number;
+  disableResponsive?: boolean;
+  onSizeChanged?: (currentSize: number) => void;
+}
+```
+
+##### `size`
+
+Used to set `Section`'s size. If `size` is set, `Section` will ignore the value of `defaultSize`, `maxSize` and `minSize`.
+
+##### `defaultSize`
+
+Used to set default size of `Section`.
+
+##### `maxSize`
+
+Used to set max size of `Section`.
+
+##### `minSize`
+
+Used to set min size of `Section`.
+
+##### `disableResponsive`
+
+Each `Section` is responsive as default, unless `size` exists. The `responsive` here means that `Section`'s size is related with `Container`'s size, if `Container`'s size turn smaller, the `Section`'s size also turn smaller automatically. Otherwise, changes of `Container` size won't affect the `Section` when `disableResponsive` is `true`.
+
+##### `onSizeChanged`
+
+Will be triggered each time its size has changed.

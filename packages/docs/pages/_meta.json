@@ -8,6 +8,11 @@
   },
   "core": "Core",
   "react": "React",
+  "-- Tips __": {
+    "type": "separator",
+    "title": "Tips"
+  },
+  "customize-resize-behavior": "Customize Resize Behavior",
   "-- more --": {
     "type": "separator",
     "title": "More"

@@ -1,1 +1,61 @@
 # Container
+
+```typescript
+import React from 'react';
+import { ColumnResizer, Resizer } from '@column-resizer/react';
+
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  vertical?: boolean;
+  onActivate?: () => void;
+  beforeApplyResizer?: (resizer: Resizer) => void;
+  afterResizing?: () => void;
+  columnResizerRef?: React.RefObject<ColumnResizer>;
+}
+```
+
+## Props
+
+### vertical
+
+```typescript
+type vertical = boolean;
+```
+
+Determine whether using vertical layout or not, default is `false`.
+
+### onActivate
+
+```typescript
+type onActivate = () => void;
+```
+
+Triggered when any [Bar](/react/components/bar) is activated. i.e, [onMouseDown](https://developer.mozilla.org/en/docs/Web/Events/mousedown) or [onTouchStart](https://developer.mozilla.org/en-US/docs/Web/Events/touchstart).
+
+### beforeApplyResizer
+
+```typescript
+import { Resizer } from '@column-resizer/react';
+
+type beforeApplyResizer = (resizer: Resizer) => void;
+```
+
+Used to [customize resize behavior](/customize-resize-behavior). In this method, you **don't** need to call [`applyResizer`](#applyresizer) to apply the resize result. Please note that you should not do any side effect on this method. If you want to do something after resizing, see [`afterResizing`](#afterresizing) below.
+
+### afterResizing
+
+```typescript
+type afterResizing = () => void;
+```
+
+Triggered after a <a name="resizing-section">**resizing section**</a> is completed, which means that it will be triggered after [onMouseUp](https://developer.mozilla.org/en-US/docs/Web/Events/mouseup) and [onTouchEnd](https://developer.mozilla.org/en-US/docs/Web/Events/touchend) events. If you want to do something after size of section has changed, use [`onSizeChanged`](#onsizechanged) props on the [`Section`](#section-) instead.
+
+### columnResizerRef
+
+```typescript
+import React from 'react';
+import { ColumnResizer } from '@column-resizer/react';
+
+type columnResizerRef = React.RefObject<ColumnResizer>;
+```
+
+Used to get [ColumnResizer](/core/api/column-resizer).
