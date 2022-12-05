@@ -8,7 +8,7 @@ export type BadgesProps = {
 
 export function Badges({ items }: BadgesProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 mt-2">
       {items.map((item) => (
         <Badge {...item} key={item.href} />
       ))}
