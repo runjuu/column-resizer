@@ -37,7 +37,7 @@ import React from 'react';
 import { Container, Section, Bar } from '@column-resizer/react';
 
 export default () => (
-  <Container style={{ height: '100px', background: 'rgba(50%, 50%, 50%, 0.5)' }}>
+  <Container style={{ height: '100px', background: '#80808080' }}>
     <Section minSize={50} />
     <Bar size={10} style={{ background: 'currentColor', cursor: 'col-resize' }} />
     <Section minSize={100} />
@@ -45,15 +45,12 @@ export default () => (
 );
 ```
 
-<Container
-  className="nx-rounded-xl"
-  style={{ height: '100px', background: 'rgba(50%, 50%, 50%, 0.5)' }}
->
-  <Section className="font-bold text-sm" minSize={50}>
+<Container className="nx-rounded-xl text-sm h-[200px] bg-[#80808050]">
+  <Section className="opacity-50" minSize={50}>
     <Center>Min Size 50px</Center>
   </Section>
-  <Bar size={10} style={{ background: '#888888', cursor: 'col-resize' }} />
-  <Section className="font-bold text-sm" minSize={100}>
+  <Bar size={10} className="transition bg-[#808080CF] hover:bg-[#808080] cursor-col-resize" />
+  <Section className="opacity-50" minSize={100}>
     <Center>Min Size 100px</Center>
   </Section>
 </Container>
