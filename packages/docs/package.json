@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@column-resizer/core": "workspace:*",
     "@column-resizer/react": "workspace:*",
     "@types/node": "18.11.10",
     "@types/react": "18.0.26",

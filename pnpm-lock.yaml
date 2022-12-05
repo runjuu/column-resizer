@@ -45,6 +45,7 @@ importers:
 
   packages/docs:
     specifiers:
+      '@column-resizer/core': workspace:*
       '@column-resizer/react': workspace:*
       '@types/node': 18.11.10
       '@types/react': 18.0.26
@@ -60,6 +61,7 @@ importers:
       tailwindcss: ^3.2.4
       typescript: ^4.9.3
     dependencies:
+      '@column-resizer/core': link:../core
       '@column-resizer/react': link:../react
       '@types/node': 18.11.10
       '@types/react': 18.0.26

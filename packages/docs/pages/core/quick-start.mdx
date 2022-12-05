@@ -1,0 +1,86 @@
+import React from 'react';
+import { Tab, Tabs } from 'nextra-theme-docs';
+import { ColumnResizer } from '@column-resizer/core';
+
+# Quick Start
+
+<div className="steps-container">
+
+### Installation
+
+{/* prettier-ignore */}
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab>
+    ```bash
+    pnpm i @column-resizer/core
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    npm i @column-resizer/core
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    yarn add @column-resizer/core
+    ```
+  </Tab>
+</Tabs>
+
+### Ready to Go!
+
+Here is a minimal example for two-column layout:
+
+```js filename="app.js"
+import React from 'react';
+import { ColumnResizer } from '@column-resizer/core';
+
+const columnResizer = new ColumnResizer({ vertical: false });
+const containerElm = document.getElementById('resizer-container');
+
+columnResizer.refresh(containerElm);
+```
+
+```jsx filename="index.html"
+<div id='resizer-container'>
+  <!-- Section -->
+  <div data-item-type='SECTION'>
+    <div>Left</div>
+  </div>
+
+  <!-- Bar -->
+  <div data-item-type='BAR' />
+
+  <!-- Section -->
+  <div data-item-type='SECTION'>
+    <div>Right</div>
+  </div>
+</div>
+```
+
+<>
+  {(() => {
+    React.useEffect(() => {
+      const columnResizer = new ColumnResizer({ vertical: false });
+      const containerElm = document.querySelector(`#resizer-core-demo`);
+
+      columnResizer.refresh(containerElm);
+    }, [])
+
+    return (
+      <div id="resizer-core-demo" className="rounded-xl text-sm h-[200px] bg-[#80808050] whitespace-nowrap overflow-hidden">
+        <div data-item-type="SECTION" className="opacity-50 flex items-center justify-center">
+          <div>Left</div>
+        </div>
+        <div data-item-type="BAR" className="transition bg-[#808080CF] hover:bg-[#808080] cursor-col-resize" />
+        <div data-item-type="SECTION" className="opacity-50 flex items-center justify-center">
+          <div>Right</div>
+        </div>
+      </div>
+    );
+
+})()}
+
+</>
+
+</div>
