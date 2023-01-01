@@ -25,6 +25,13 @@ jobs:
           node-version: 'lts/*'
           cache: 'pnpm'
 
+      - name: Setup npm auth
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          pnpm config set '//registry.npmjs.org/:_authToken' "${NPM_AUTH_TOKEN}"
+          pnpm whoami
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -34,7 +41,4 @@ jobs:
       - name: Publish packages
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: |
-          pnpm config set '//registry.npmjs.org/:_authToken' "${NPM_AUTH_TOKEN}"
-          pnpm whoami
-          pnpm -r publish --access public
+        run: pnpm -r publish --access public --no-git-checks
