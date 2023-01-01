@@ -1,8 +1,4 @@
 {
-  "--- Simple Behavior ---": {
-    "type": "separator",
-    "title": "Simple Behavior"
-  },
   "simple": "Simple",
   "default-size": "Default Size",
   "responsive-size": "Responsive Size",
