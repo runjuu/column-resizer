@@ -1,16 +1,72 @@
 # ColumnResizer
 
 ```typescript
+type ColumnResizerConfig = {
+  vertical: boolean;
+  beforeApplyResizer?: (resizer: Resizer) => void;
+};
+
 class ColumnResizer {
-  public getResizer(): Resizer;
-  public applyResizer(resizer: Resizer): void;
+  constructor(config: ColumnResizerConfig) {}
+
+  init(container: HTMLElement | null): void;
+  dispose(): void;
+
+  getResizer(): Resizer;
+  applyResizer(resizer: Resizer): void;
 }
 ```
 
-##### `getResizer`
+Use `ColumnResizer` to manage the column/row resizing behavior.
+
+## ColumnResizerConfig
+
+### vertical
+
+```typescript
+type vertical = boolean;
+```
+
+Determine whether using vertical layout or not, default is `false`.
+
+### beforeApplyResizer
+
+```typescript
+type beforeApplyResizer = (resizer: Resizer) => void;
+```
+
+Used to [customize resize behavior](/customize-resize-behavior). In this method, you don't need to call [applyResizer](#applyresizer) to apply the resize result. Please note that you should not do any side effect on this method. If you want to do something after resizing, see [afterResizing](#afterresizing) below.
+
+## ColumnResizer
+
+### getResizer
+
+```typescript
+type getResizer = () => Resizer;
+```
 
 Used to get newest [`Resizer`](#customize-resize-behavior). But any change won't apply unless you pass the `Resizer` to `applyResizer`.
 
-##### `applyResizer`
+### applyResizer
+
+```typescript
+type applyResizer = (resizer: Resizer) => void;
+```
 
 Apply the passed `Resizer` to `Container`.
+
+### init
+
+```typescript
+type init = (container: HTMLElement | null) => void;
+```
+
+Used to initiate `ColumnResizer`.
+
+### dispose
+
+```typescript
+type dispose = () => void;
+```
+
+Used to clear `ColumnResizer`'s event listeners.
