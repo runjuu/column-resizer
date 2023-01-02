@@ -3,18 +3,18 @@
   "examples": "Examples",
   "-- integrations --": {
     "type": "separator",
-    "title": "Integrations"
+    "title": "🪐 Integrations"
   },
   "core": "Core",
   "react": "React",
   "-- Tips __": {
     "type": "separator",
-    "title": "Tips"
+    "title": "🌟 Tips"
   },
   "customize-resize-behavior": "Customize Resize Behavior",
   "-- more --": {
     "type": "separator",
-    "title": "More"
+    "title": "👀 More"
   },
   "migration-from-react-simple-resizer": "Migration From React Simple Resizer"
 }

@@ -1,8 +1,10 @@
 import { DocsThemeConfig } from 'nextra-theme-docs';
 import { useRouter } from 'next/router';
 
+import { version } from './package.json';
+
 const config: DocsThemeConfig = {
-  logo: <strong>Column Resizer Documentation</strong>,
+  logo: <strong>🐙 Column Resizer ({version})</strong>,
   docsRepositoryBase: 'https://github.com/Runjuu/column-resizer/tree/main/packages/docs/pages',
   project: {
     link: 'https://github.com/Runjuu/column-resizer',
