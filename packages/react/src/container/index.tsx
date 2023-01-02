@@ -32,7 +32,11 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
       beforeApplyResizer,
     });
 
-    useIsomorphicLayoutEffect(() => columnResizer.refresh(containerRef.current), [columnResizer]);
+    useIsomorphicLayoutEffect(() => {
+      columnResizer.init(containerRef.current);
+      return () => columnResizer.dispose();
+    }, [columnResizer]);
+
     React.useImperativeHandle(columnResizerRef, () => columnResizer, [columnResizer]);
 
     return (

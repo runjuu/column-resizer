@@ -19,7 +19,7 @@ import {
   parseResizerItems,
   resizerItemAttributes,
   ResizerItems,
-  watchResizerEvent,
+  ResizerEventHub,
 } from './utils';
 
 export type { ColumnSectionConfig, ColumnBarConfig };
@@ -54,9 +54,8 @@ export class ColumnResizer {
     section: resizerItemAttributes(ItemType.SECTION),
   };
 
-  on = watchResizerEvent;
-
   private itemsCache = new ColumnItemsCache();
+  private eventHub = new ResizerEventHub();
 
   private container: HTMLElement | null = null;
 
@@ -77,14 +76,14 @@ export class ColumnResizer {
     return this.config.vertical ? 'column' : 'row';
   }
 
-  constructor(public readonly config: Readonly<ColumnResizerConfig>) {
-    this.barStore.subscribe((state) => {
-      this.monitorBarStatusChanges(state);
-      this.sizeRelatedInfoChange(state);
-    });
+  get on() {
+    return this.eventHub.watchResizerEvent;
   }
 
-  refresh(container: HTMLElement | null) {
+  constructor(public readonly config: Readonly<ColumnResizerConfig>) {}
+
+  init(container: HTMLElement | null) {
+    this.dispose();
     this.container = container;
 
     if (container) {
@@ -101,12 +100,19 @@ export class ColumnResizer {
 
       this.initStyles(container, this.itemsCache.getItems());
       this.sizeRelatedInfoChange(this.makeSizeInfos());
+
+      this.barStore.subscribe((state) => {
+        this.monitorBarStatusChanges(state);
+        this.sizeRelatedInfoChange(state);
+      });
     }
   }
 
-  destroy() {
+  dispose() {
+    this.container = null;
     this.itemsCache.reset();
     this.barStore.unsubscribeAll();
+    this.eventHub.reset();
   }
 
   getResizer(): Resizer {
