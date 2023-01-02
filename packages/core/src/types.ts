@@ -46,4 +46,6 @@ export type ColumnResizerEventMap = {
   'bar:click': null;
   'bar:status-change': { isActive: boolean };
   'section:size-change': { size: number };
+  'column:activate': null;
+  'column:after-resizing': null;
 };

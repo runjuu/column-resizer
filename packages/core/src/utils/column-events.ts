@@ -11,9 +11,9 @@ export function watchResizerEvent<E extends Element, K extends keyof ColumnResiz
 }
 
 export function dispatchResizerEvent<E extends Element, K extends keyof ColumnResizerEventMap>(
-  elm: E,
+  elm: E | null,
   key: K,
   detail: ColumnResizerEventMap[K],
 ) {
-  elm.dispatchEvent(new CustomEvent(key, { detail }));
+  elm?.dispatchEvent(new CustomEvent(key, { detail }));
 }

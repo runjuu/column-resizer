@@ -13,6 +13,7 @@ import {
   collectSizeRelatedInfo,
   ColumnItemsCache,
   createBarStore,
+  dispatchResizerEvent,
   isDisabledResponsive,
   isSolidItem,
   parseResizerItems,
@@ -25,9 +26,7 @@ export type { ColumnSectionConfig, ColumnBarConfig };
 
 export type ColumnResizerConfig = {
   vertical: boolean;
-  onActivate?: () => void;
   beforeApplyResizer?: (resizer: Resizer) => void;
-  afterResizing?: () => void;
 };
 
 export class ColumnResizer {
@@ -59,6 +58,8 @@ export class ColumnResizer {
 
   private itemsCache = new ColumnItemsCache();
 
+  private container: HTMLElement | null = null;
+
   private barStore = createBarStore({
     calculateOffset: (current, original) => calculateCoordinateOffset(current, original)[this.axis],
     getSizeRelatedInfo: () => this.makeSizeInfos(),
@@ -84,6 +85,8 @@ export class ColumnResizer {
   }
 
   refresh(container: HTMLElement | null) {
+    this.container = container;
+
     if (container) {
       this.itemsCache.update(
         parseResizerItems(container).map((item) => {
@@ -149,11 +152,9 @@ export class ColumnResizer {
   private monitorBarStatusChanges({ type }: BarActionScanResult) {
     switch (type) {
       case BarActionType.ACTIVATE:
-        this.config.onActivate?.();
-        return;
+        return dispatchResizerEvent(this.container, 'column:activate', null);
       case BarActionType.DEACTIVATE:
-        this.config.afterResizing?.();
-        return;
+        return dispatchResizerEvent(this.container, 'column:after-resizing', null);
       default:
         return;
     }
