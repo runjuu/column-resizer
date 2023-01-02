@@ -38,7 +38,7 @@ import { ColumnResizer } from '@column-resizer/core';
 const columnResizer = new ColumnResizer({ vertical: false });
 const containerElm = document.getElementById('resizer-container');
 
-columnResizer.refresh(containerElm);
+columnResizer.init(containerElm);
 ```
 
 ```jsx filename="index.html"
@@ -64,7 +64,7 @@ columnResizer.refresh(containerElm);
       const columnResizer = new ColumnResizer({ vertical: false });
       const containerElm = document.querySelector(`#resizer-core-demo`);
 
-      columnResizer.refresh(containerElm);
+      columnResizer.init(containerElm);
     }, [])
 
     return (
