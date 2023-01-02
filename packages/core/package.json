@@ -4,7 +4,7 @@
   "license": "MIT",
   "repository": "github:Runjuu/column-resizer",
   "bugs": "https://github.com/Runjuu/column-resizer/issues",
-  "homepage": "https://github.com/Runjuu/column-resizer#readme",
+  "homepage": "https://column-resizer.vercel.app/core",
   "author": "Runjuu",
   "keywords": [
     "resize",
@@ -18,18 +18,25 @@
     "range slider",
     "resize table columns"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "typings": "dist/esm/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",
-    "package.json"
+    "package.json",
+    "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && run-p build:cjs build:esm",
-    "build:cjs": "tsc -p tsconfig.json -m CommonJS --outDir dist/cjs",
-    "build:esm": "tsc -p tsconfig.json -m ESNext --outDir dist/esm",
+    "build": "npm run clean && tsup",
     "clean": "rm -rf ./dist"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
   }
 }
