@@ -12,6 +12,23 @@ export type ColumnBarConfig = {
   size: number;
 };
 
+type ValidElmEventKey = {
+  [K in keyof HTMLElementEventMap]: K extends `${'touch' | 'mouse'}${string}` ? K : never;
+}[keyof HTMLElementEventMap];
+
+type ValidElm = {
+  addEventListener<K extends ValidElmEventKey>(
+    type: K,
+    listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
+  removeEventListener<K extends ValidElmEventKey>(
+    type: K,
+    listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions,
+  ): void;
+};
+
 export class ColumnBar extends ColumnInstance {
   static getStyle({ size }: ColumnBarConfig) {
     return {
@@ -28,55 +45,44 @@ export class ColumnBar extends ColumnInstance {
     private readonly dispatchBarAction: DispatchBarAction,
   ) {
     super(ItemType.BAR, item.elm);
+
     this.config = getConfig(item);
 
-    const onMouseDown = this.triggerMouseAction(BarActionType.ACTIVATE);
-    const onMouseMove = this.triggerMouseAction(BarActionType.MOVE);
-    const onMouseUp = this.triggerMouseAction(BarActionType.DEACTIVATE);
+    const disposeList = [
+      this.attachListener(this.elm, 'mousedown', BarActionType.ACTIVATE),
+      this.attachListener(document, 'mousemove', BarActionType.MOVE),
+      this.attachListener(document, 'mouseup', BarActionType.DEACTIVATE),
 
-    const onTouchStart = this.triggerTouchAction(BarActionType.ACTIVATE);
-    const onTouchMove = this.triggerTouchAction(BarActionType.MOVE);
-    const onTouchEnd = this.triggerTouchAction(BarActionType.DEACTIVATE);
-    const onTouchCancel = this.triggerTouchAction(BarActionType.DEACTIVATE);
-
-    this.elm.addEventListener('mousedown', onMouseDown);
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-
-    this.elm.addEventListener('touchstart', onTouchStart, DISABLE_PASSIVE);
-    document.addEventListener('touchmove', onTouchMove, DISABLE_PASSIVE);
-    document.addEventListener('touchend', onTouchEnd);
-    document.addEventListener('touchcancel', onTouchCancel);
+      this.attachListener(this.elm, 'touchstart', BarActionType.ACTIVATE, DISABLE_PASSIVE),
+      this.attachListener(document, 'touchmove', BarActionType.MOVE, DISABLE_PASSIVE),
+      this.attachListener(document, 'touchend', BarActionType.DEACTIVATE),
+      this.attachListener(document, 'touchcancel', BarActionType.DEACTIVATE),
+    ];
 
     this.destroy = () => {
       super.destroy();
-
-      this.elm.removeEventListener('mousedown', onMouseDown);
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-
-      this.elm.removeEventListener('touchstart', onTouchStart);
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-      document.removeEventListener('touchcancel', onTouchCancel);
+      disposeList.forEach((dispose) => dispose());
     };
   }
 
-  private triggerMouseAction(type: BarActionType) {
-    return (event: MouseEvent) => {
+  private attachListener<K extends ValidElmEventKey>(
+    elm: ValidElm,
+    event: K,
+    type: BarActionType,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    const handler = (event: MouseEvent | TouchEvent) => {
       this.disableUserSelectIfResizing(event, type);
-      const { clientX: x, clientY: y } = event;
+      const { clientX: x, clientY: y } = ('touches' in event ? event.touches[0] : event) || {
+        clientX: 0,
+        clientY: 0,
+      };
       this.triggerAction(this.elm, type, { x, y });
     };
-  }
 
-  private triggerTouchAction(type: BarActionType) {
-    return (event: TouchEvent) => {
-      this.disableUserSelectIfResizing(event, type);
-      const touch = event.touches[0] || { clientX: 0, clientY: 0 };
-      const { clientX: x, clientY: y } = touch;
-      this.triggerAction(this.elm, type, { x, y });
-    };
+    elm.addEventListener(event, handler, options);
+
+    return () => elm.removeEventListener(event, handler, options);
   }
 
   private disableUserSelectIfResizing(event: MouseEvent | TouchEvent, type: BarActionType) {
