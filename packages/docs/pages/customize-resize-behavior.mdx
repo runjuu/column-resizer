@@ -1,7 +1,7 @@
 # Customize Resize Behavior
 
-If you want to customize behavior of resizing, then you have to know how to use `Resizer`.
+If you want to customize behavior of resizing, then you have to know how to use [`Resizer`](/core/api/resizer).
 
-There is two ways to get the `Resizer`. One is [`beforeApplyResizer`](/core/api/resizer#beforeapplyresizer) defined on the **props** of `Container`, and the other is [`getResizer`](#getresizer) defined on the **instance** of `Container`.
+There is two ways to get the [`Resizer`](/core/api/resizer). One is [`beforeApplyResizer`](/core/api/resizer#beforeapplyresizer) defined on the **props** of `Container`, and the other is [`getResizer`](#getresizer) defined on the **instance** of `Container`.
 
 Beware that you need **manually** calling [`applyResizer`](/core/api/resizer#applyresizer) every time you want to apply the effect, except in `beforeApplyResizer`. Check demo [Make Section collapsible](https://codesandbox.io/s/make-section-collapsible-vv5z9g?file=/src/index.tsx) to see how `applyResizer` is used.
