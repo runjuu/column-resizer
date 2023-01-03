@@ -1,6 +1,6 @@
 {
   "name": "column-resizer-monorepo",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "An intuitive React component set for multi-column resizing",
   "license": "MIT",
   "private": true,
