@@ -30,14 +30,14 @@ export class ColumnBar extends ColumnInstance {
     super(ItemType.BAR, item.elm);
     this.config = getConfig(item);
 
-    const onMouseDown = this.triggerMouseAction(this.elm, BarActionType.ACTIVATE);
-    const onMouseMove = this.triggerMouseAction(this.elm, BarActionType.MOVE);
-    const onMouseUp = this.triggerMouseAction(this.elm, BarActionType.DEACTIVATE);
+    const onMouseDown = this.triggerMouseAction(BarActionType.ACTIVATE);
+    const onMouseMove = this.triggerMouseAction(BarActionType.MOVE);
+    const onMouseUp = this.triggerMouseAction(BarActionType.DEACTIVATE);
 
-    const onTouchStart = this.triggerTouchAction(this.elm, BarActionType.ACTIVATE);
-    const onTouchMove = this.triggerTouchAction(this.elm, BarActionType.MOVE);
-    const onTouchEnd = this.triggerTouchAction(this.elm, BarActionType.DEACTIVATE);
-    const onTouchCancel = this.triggerTouchAction(this.elm, BarActionType.DEACTIVATE);
+    const onTouchStart = this.triggerTouchAction(BarActionType.ACTIVATE);
+    const onTouchMove = this.triggerTouchAction(BarActionType.MOVE);
+    const onTouchEnd = this.triggerTouchAction(BarActionType.DEACTIVATE);
+    const onTouchCancel = this.triggerTouchAction(BarActionType.DEACTIVATE);
 
     this.elm.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mousemove', onMouseMove);
@@ -62,20 +62,20 @@ export class ColumnBar extends ColumnInstance {
     };
   }
 
-  private triggerMouseAction(elm: HTMLElement, type: BarActionType) {
+  private triggerMouseAction(type: BarActionType) {
     return (event: MouseEvent) => {
       this.disableUserSelectIfResizing(event, type);
       const { clientX: x, clientY: y } = event;
-      this.triggerAction(elm, type, { x, y });
+      this.triggerAction(this.elm, type, { x, y });
     };
   }
 
-  private triggerTouchAction(elm: HTMLElement, type: BarActionType) {
+  private triggerTouchAction(type: BarActionType) {
     return (event: TouchEvent) => {
       this.disableUserSelectIfResizing(event, type);
       const touch = event.touches[0] || { clientX: 0, clientY: 0 };
       const { clientX: x, clientY: y } = touch;
-      this.triggerAction(elm, type, { x, y });
+      this.triggerAction(this.elm, type, { x, y });
     };
   }
 
