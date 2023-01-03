@@ -5,10 +5,10 @@ export default defineConfig({
   dts: true,
   entry: ['src/index.ts'],
   outDir: 'dist',
-  format: ['cjs', 'esm'],
+  format: ['cjs', 'esm', 'iife'],
+  globalName: 'ColumnResizerCore',
   minify: true,
   treeshake: true,
   tsconfig: 'tsconfig.json',
   splitting: true,
-  sourcemap: true,
 });
