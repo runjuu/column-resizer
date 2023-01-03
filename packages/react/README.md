@@ -2,7 +2,7 @@
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Runjuu/column-resizer/blob/main/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier)
 
-A set of React components for multi-column(row) resizing. Works in every modern browser [which](https://caniuse.com/#feat=flexbox) supports [flexible box layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout).
+React components for multi-column(row) resizing. Works in every modern browser [which](https://caniuse.com/#feat=flexbox) supports [flexible box layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout).
 
 - Support both mouse and touch events
 - Support server-side rendering
