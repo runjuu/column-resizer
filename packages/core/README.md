@@ -6,7 +6,7 @@ A library for multi-column(row) resizing. Works in every modern browser [which](
 
 - Support both mouse and touch events
 - Support server-side rendering
-- 0 dependencies, packages size under 5kB after min-zipping
+- 0 dependencies, packages size under 5 kB after min-zipping
 - Easy to customize resize behavior
 
 ## 📚 Docs
