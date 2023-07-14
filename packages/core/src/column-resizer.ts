@@ -59,10 +59,7 @@ export class ColumnResizer {
 
   private container: HTMLElement | null = null;
 
-  private barStore = createBarStore({
-    calculateOffset: (current, original) => calculateCoordinateOffset(current, original)[this.axis],
-    getSizeRelatedInfo: () => this.makeSizeInfos(),
-  });
+  private barStore: ReturnType<typeof createBarStore>;
 
   private get axis() {
     return this.config.vertical ? 'y' : 'x';
@@ -80,7 +77,12 @@ export class ColumnResizer {
     return this.eventHub.watchResizerEvent;
   }
 
-  constructor(public readonly config: Readonly<ColumnResizerConfig>) {}
+  constructor(public readonly config: Readonly<ColumnResizerConfig>) {
+    this.barStore = createBarStore({
+      calculateOffset: (current, original) => calculateCoordinateOffset(current, original)[this.axis],
+      getSizeRelatedInfo: () => this.makeSizeInfos(),
+    });
+  }
 
   init(container: HTMLElement | null) {
     this.dispose();
