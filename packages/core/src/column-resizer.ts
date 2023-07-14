@@ -79,7 +79,8 @@ export class ColumnResizer {
 
   constructor(public readonly config: Readonly<ColumnResizerConfig>) {
     this.barStore = createBarStore({
-      calculateOffset: (current, original) => calculateCoordinateOffset(current, original)[this.axis],
+      calculateOffset: (current, original) =>
+        calculateCoordinateOffset(current, original)[this.axis],
       getSizeRelatedInfo: () => this.makeSizeInfos(),
     });
   }
