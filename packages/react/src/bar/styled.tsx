@@ -21,7 +21,6 @@ export const StyledInteractiveArea = React.forwardRef<HTMLDivElement, StyledInte
         left: -left,
         right: -right,
         bottom: -bottom,
-        cursor: vertical ? 'row-resize' : 'col-resize',
         WebkitTapHighlightColor: 'transparent',
         userSelect: 'none', // disable ios long press popup
         ...propsStyle,
