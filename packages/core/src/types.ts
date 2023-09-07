@@ -17,7 +17,10 @@ export enum BarActionType {
 }
 
 export abstract class ColumnInstance {
-  protected constructor(public readonly type: ItemType, public readonly elm: HTMLElement) {}
+  protected constructor(
+    public readonly type: ItemType,
+    public readonly elm: HTMLElement,
+  ) {}
   destroy() {}
 }
 
