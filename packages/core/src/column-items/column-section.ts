@@ -1,5 +1,5 @@
 import { SizeInfo, ColumnInstance, ItemType } from '../types';
-import { isValidNumber, dispatchResizerEvent, ParseResizerItemsResult } from '../utils';
+import { isValidNumber, dispatchResizerEvent, parseItemConfig, ParsedResizerItem } from '../utils';
 
 export type ColumnSectionConfig = {
   size?: number;
@@ -9,7 +9,7 @@ export type ColumnSectionConfig = {
   disableResponsive?: boolean;
 };
 
-export class ColumnSection extends ColumnInstance {
+export class ColumnSection extends ColumnInstance<ColumnSectionConfig> {
   static getStyle({ maxSize, minSize }: ColumnSectionConfig, vertical: boolean) {
     const toCSSSize = (size?: number) => (isValidNumber(size) ? `${size}px` : undefined);
 
@@ -22,12 +22,10 @@ export class ColumnSection extends ColumnInstance {
 
   private sizeInfo: SizeInfo | null = null;
   private flexGrowRatio = 0;
-  readonly config: ColumnSectionConfig;
 
-  constructor(item: ParseResizerItemsResult[0]) {
-    super(ItemType.SECTION, item.elm);
+  constructor(item: ParsedResizerItem) {
+    super(ItemType.SECTION, item.elm, () => getConfig(item));
 
-    this.config = getConfig(item);
     this.updateStyle();
   }
 
@@ -69,8 +67,8 @@ export class ColumnSection extends ColumnInstance {
   }
 }
 
-function getConfig({ config }: ParseResizerItemsResult[0]): ColumnSectionConfig {
-  const { size, defaultSize, maxSize, minSize, disableResponsive } = config;
+function getConfig(item: Pick<ParsedResizerItem, 'elm'>): ColumnSectionConfig {
+  const { size, defaultSize, maxSize, minSize, disableResponsive } = parseItemConfig(item);
 
   return {
     size: isValidNumber(size) ? size : undefined,

@@ -1,6 +1,6 @@
 import { ColumnInstance } from '../types';
 
-export type ResizerItems = ReadonlyArray<Readonly<ColumnInstance>>;
+export type ResizerItems = ReadonlyArray<ColumnInstance>;
 
 export class ColumnItemsCache {
   private infoMap = new Map<ColumnInstance['elm'], { item: ColumnInstance; index: number }>();

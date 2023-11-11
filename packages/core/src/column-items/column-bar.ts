@@ -3,7 +3,8 @@ import {
   DISABLE_PASSIVE,
   dispatchResizerEvent,
   isValidNumber,
-  ParseResizerItemsResult,
+  parseItemConfig,
+  ParsedResizerItem,
 } from '../utils';
 
 export type DispatchBarAction = (elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) => void;
@@ -29,7 +30,7 @@ type ValidElm = {
   ): void;
 };
 
-export class ColumnBar extends ColumnInstance {
+export class ColumnBar extends ColumnInstance<ColumnBarConfig> {
   static getStyle({ size }: ColumnBarConfig) {
     return {
       flex: `0 0 ${size}px`,
@@ -38,15 +39,12 @@ export class ColumnBar extends ColumnInstance {
 
   private isActive = false;
   private isValidClick = true;
-  readonly config: ColumnBarConfig;
 
   constructor(
-    item: ParseResizerItemsResult[0],
+    item: ParsedResizerItem,
     private readonly dispatchBarAction: DispatchBarAction,
   ) {
-    super(ItemType.BAR, item.elm);
-
-    this.config = getConfig(item);
+    super(ItemType.BAR, item.elm, () => getConfig(item));
 
     const disposeList = [
       this.attachListener(this.elm, 'mousedown', BarActionType.ACTIVATE),
@@ -132,8 +130,8 @@ export class ColumnBar extends ColumnInstance {
   }
 }
 
-function getConfig({ config }: ParseResizerItemsResult[0]): ColumnBarConfig {
-  const { size } = config;
+function getConfig(item: Pick<ParsedResizerItem, 'elm'>): ColumnBarConfig {
+  const { size } = parseItemConfig(item);
 
   return {
     size: isValidNumber(size) ? size : 10,

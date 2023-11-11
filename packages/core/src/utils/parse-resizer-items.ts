@@ -2,11 +2,12 @@ import { ItemType } from '../types';
 
 import { isValidType } from './is-valid-type';
 
-export type ParseResizerItemsResult = {
+export type ParsedResizerItem = {
   type: ItemType;
   elm: HTMLElement;
-  config: Record<string, unknown>;
-}[];
+};
+
+export type ParsedResizerItems = ParsedResizerItem[];
 
 export function resizerItemAttributes<T>(type: ItemType) {
   return (config: T) => ({
@@ -15,7 +16,7 @@ export function resizerItemAttributes<T>(type: ItemType) {
   });
 }
 
-export function parseResizerItems(container: HTMLElement): ParseResizerItemsResult {
+export function parseResizerItems(container: HTMLElement): ParsedResizerItems {
   return Array.from(container.childNodes)
     .map((elm) => {
       if (!(elm instanceof HTMLElement)) return null;
@@ -23,19 +24,19 @@ export function parseResizerItems(container: HTMLElement): ParseResizerItemsResu
       const type = elm.getAttribute('data-item-type');
 
       if (isValidType(type)) {
-        return { type, elm, config: parseConfig(elm) };
+        return { type, elm };
       } else {
         return null;
       }
     })
     .filter(<T>(item: T): item is Exclude<T, null> => !!item);
+}
 
-  function parseConfig(elm: HTMLElement) {
-    try {
-      const config = JSON.parse(elm.getAttribute('data-item-config') ?? '');
-      return config && typeof config === 'object' ? config : {};
-    } catch {
-      return {};
-    }
+export function parseItemConfig({ elm }: { elm: HTMLElement }): Record<string, unknown> {
+  try {
+    const config = JSON.parse(elm.getAttribute('data-item-config') ?? '');
+    return config && typeof config === 'object' ? config : {};
+  } catch {
+    return {};
   }
 }
