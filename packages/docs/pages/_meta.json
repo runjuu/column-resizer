@@ -11,10 +11,5 @@
     "type": "separator",
     "title": "🌟 Tips"
   },
-  "customize-resize-behavior": "Customize Resize Behavior",
-  "-- more --": {
-    "type": "separator",
-    "title": "👀 More"
-  },
-  "migration-from-react-simple-resizer": "Migration From React Simple Resizer"
+  "customize-resize-behavior": "Customize Resize Behavior"
 }
