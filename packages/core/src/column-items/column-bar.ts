@@ -1,4 +1,4 @@
-import { BarAction, BarActionType, Coordinate, ColumnInstance, ItemType } from '../types';
+import { BarAction, BarActionType, Coordinate, ItemType } from '../types';
 import {
   DISABLE_PASSIVE,
   dispatchResizerEvent,
@@ -6,6 +6,8 @@ import {
   parseItemConfig,
   ParsedResizerItem,
 } from '../utils';
+
+import { ColumnInstance } from './column-instance';
 
 export type DispatchBarAction = (elm: HTMLElement, action: Omit<BarAction, 'barIndex'>) => void;
 

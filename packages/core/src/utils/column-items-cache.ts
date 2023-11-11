@@ -1,4 +1,4 @@
-import { ColumnInstance } from '../types';
+import type { ColumnInstance } from '../column-items/column-instance';
 
 export type ResizerItems = ReadonlyArray<ColumnInstance>;
 

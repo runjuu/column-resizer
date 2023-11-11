@@ -1,5 +1,7 @@
-import { SizeInfo, ColumnInstance, ItemType } from '../types';
+import { SizeInfo, ItemType } from '../types';
 import { isValidNumber, dispatchResizerEvent, parseItemConfig, ParsedResizerItem } from '../utils';
+
+import { ColumnInstance } from './column-instance';
 
 export type ColumnSectionConfig = {
   size?: number;
