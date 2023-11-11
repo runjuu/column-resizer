@@ -19,7 +19,7 @@ export default defineConfig([
   {
     ...baseConfig,
     format: 'cjs',
-    target: 'es2018',
+    target: 'es5',
   },
   {
     ...baseConfig,
