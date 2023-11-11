@@ -32,7 +32,6 @@ const config: DocsThemeConfig = {
       }
       return <>{title}</>;
     },
-    defaultMenuCollapseLevel: 1,
   },
 };
 
