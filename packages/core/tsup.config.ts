@@ -1,14 +1,29 @@
-import { defineConfig } from 'tsup';
+import { defineConfig, Options } from 'tsup';
 
-export default defineConfig({
+const baseConfig: Options = {
   clean: true,
   dts: true,
   entry: ['src/index.ts'],
   outDir: 'dist',
-  format: ['cjs', 'esm', 'iife'],
-  globalName: 'ColumnResizerCore',
   minify: true,
   treeshake: true,
   tsconfig: 'tsconfig.json',
   splitting: true,
-});
+};
+
+export default defineConfig([
+  {
+    ...baseConfig,
+    format: 'esm',
+  },
+  {
+    ...baseConfig,
+    format: 'cjs',
+    target: 'es2018',
+  },
+  {
+    ...baseConfig,
+    format: 'iife',
+    globalName: 'ColumnResizerCore',
+  },
+]);
