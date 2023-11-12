@@ -21,10 +21,12 @@ composer.lock
 *.swo
 
 # Project Specific
+.next
 .turbo
 .cache
 node_modules
 dist
 build
 *.log
+next-env.d.ts
 /coverage
