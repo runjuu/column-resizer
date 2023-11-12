@@ -12,9 +12,11 @@ A set of library for multi-column(row) resizing. Works in every modern browser [
 ## 📚 Docs
 
 - Check out [our documentation](https://column-resizer.runjuu.com/) for guides and a full API reference.
-- Or see [our examples](https://github.com/runjuu/column-resizer/tree/main/packages/docs/examples) for inspiration.
+- Or see [our examples](https://github.com/runjuu/column-resizer/tree/main/docs/examples) for inspiration.
 
 ## 🪐 Ecosystem
+
+The core library is framework-agnostic and can be used with any framework or [even without one](https://column-resizer.runjuu.com/core/quick-start). If you want to add support for your favorite framework, a pull request is welcomed!
 
 | **Project**                                                      | **Status**                                                                                                                                                                                                                                                                                                                   | **Description**   |
 | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
