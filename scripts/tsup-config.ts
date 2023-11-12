@@ -12,6 +12,7 @@ export function modernConfig(opts?: Pick<Options, 'entry'>): Options {
     sourcemap: true,
     clean: true,
     bundle: true,
+    minify: true,
   };
 }
 
@@ -25,6 +26,7 @@ export function legacyConfig(opts?: Pick<Options, 'entry'>): Options {
     sourcemap: true,
     clean: true,
     bundle: true,
+    minify: true,
   };
 }
 
@@ -36,5 +38,6 @@ export function iifeConfig(opts?: Pick<Options, 'entry'>): Options {
     outDir: 'dist',
     clean: true,
     bundle: true,
+    minify: true,
   };
 }
