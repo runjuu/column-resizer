@@ -1,0 +1,26 @@
+{
+  "name": "react-cra5",
+  "private": true,
+  "scripts": {
+    "start": "cross-env BROWSER=none react-scripts start",
+    "test:bundle": "cross-env react-scripts build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@column-resizer/react": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1"
+  }
+}
