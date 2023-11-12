@@ -1,7 +1,7 @@
 import { DocsThemeConfig } from 'nextra-theme-docs';
 import { useRouter } from 'next/router';
 
-import packageJSON from './package.json';
+import packageJSON from '../package.json';
 
 const config: DocsThemeConfig = {
   logo: <strong>🐙 Column Resizer ({packageJSON.version})</strong>,

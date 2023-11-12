@@ -1,6 +1,5 @@
 {
   "name": "@column-resizer/docs",
-  "version": "1.2.1",
   "private": true,
   "scripts": {
     "build": "next build",
