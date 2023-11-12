@@ -32,7 +32,6 @@ import { ColumnResizer } from '@column-resizer/core';
 Here is a minimal example for two-column layout:
 
 ```js filename="app.js"
-import React from 'react';
 import { ColumnResizer } from '@column-resizer/core';
 
 const columnResizer = new ColumnResizer({ vertical: false });
@@ -82,5 +81,42 @@ columnResizer.init(containerElm);
 })()}
 
 </>
-
 </div>
+
+### Or use with CDN
+
+```html {6,9-22,25-28}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Column Resizer</title>
+    <script src="https://unpkg.com/@column-resizer/core/dist/index.global.js"></script>
+  </head>
+  <body>
+    <div id="resizer-container" style="background: #999999; height: 60vh">
+      <!-- Section -->
+      <div data-item-type="SECTION" data-item-config='{ "minSize": 150 }'>
+        <div>Left (Min Size 150px)</div>
+      </div>
+
+      <!-- Bar -->
+      <div data-item-type="BAR" style="background: #2e2e2e; cursor: pointer"></div>
+
+      <!-- Section -->
+      <div data-item-type="SECTION">
+        <div>Right</div>
+      </div>
+    </div>
+
+    <script>
+      const columnResizer = new ColumnResizerCore.ColumnResizer({ vertical: false });
+      const containerElm = document.getElementById('resizer-container');
+
+      columnResizer.init(containerElm);
+    </script>
+  </body>
+</html>
+```
+
+Check out the live demo <a className="nx-text-primary-600 nx-underline nx-decoration-from-font [text-underline-position:from-font]" href="/cdn-example.html" target="_blank">here</a>.
