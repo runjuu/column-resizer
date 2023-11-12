@@ -18,14 +18,12 @@
     "range slider",
     "resize table columns"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "typings": "dist/index.d.ts",
+  "main": "dist/legacy/index.cjs",
+  "module": "dist/legacy/index.js",
   "sideEffects": false,
   "files": [
     "dist",
-    "package.json",
-    "README.md"
+    "package.json"
   ],
   "scripts": {
     "build": "npm run clean && tsup",
@@ -33,12 +31,19 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": {
+        "types": "./dist/modern/index.d.ts",
+        "default": "./dist/modern/index.js"
+      },
+      "require": {
+        "types": "./dist/modern/index.d.cts",
+        "default": "./dist/modern/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
+  "type": "module",
+  "types": "dist/legacy/index.d.ts",
   "dependencies": {
     "@column-resizer/core": "workspace:*"
   },

@@ -1,29 +1,5 @@
-import { defineConfig, Options } from 'tsup';
+import { defineConfig } from 'tsup';
 
-const baseConfig: Options = {
-  clean: true,
-  dts: true,
-  entry: ['src/index.ts'],
-  outDir: 'dist',
-  minify: true,
-  treeshake: true,
-  tsconfig: 'tsconfig.json',
-  splitting: true,
-};
+import { iifeConfig, legacyConfig, modernConfig } from '../../scripts/tsup-config';
 
-export default defineConfig([
-  {
-    ...baseConfig,
-    format: 'esm',
-  },
-  {
-    ...baseConfig,
-    format: 'cjs',
-    target: 'es5',
-  },
-  {
-    ...baseConfig,
-    format: 'iife',
-    globalName: 'ColumnResizerCore',
-  },
-]);
+export default defineConfig([iifeConfig(), modernConfig(), legacyConfig()]);

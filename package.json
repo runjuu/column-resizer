@@ -8,13 +8,6 @@
   "bugs": "https://github.com/Runjuu/column-resizer/issues",
   "homepage": "https://github.com/Runjuu/column-resizer#readme",
   "author": "Runjuu",
-  "keywords": [
-    "react",
-    "resize",
-    "resizer",
-    "multi-column"
-  ],
-  "main": "./dist/index.js",
   "scripts": {
     "build": "turbo run build",
     "build:pkgs": "turbo run build --filter=!@column-resizer/docs",
@@ -34,7 +27,6 @@
       "prettier --write"
     ]
   },
-  "types": "./dist/index.d.ts",
   "devDependencies": {
     "@swc/core": "^1.3.96",
     "@types/react": "18.2.37",
