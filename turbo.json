@@ -5,10 +5,14 @@
       "dependsOn": ["^build"]
     },
     "build:release": {
-      "dependsOn": ["clean", "build", "test", "lint"],
+      "dependsOn": ["clean", "build", "test", "lint", "test:bundle"],
       "outputs": []
     },
     "test": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
+    "test:bundle": {
       "dependsOn": ["build"],
       "outputs": []
     },
