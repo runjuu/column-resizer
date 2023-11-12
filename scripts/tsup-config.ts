@@ -30,14 +30,15 @@ export function legacyConfig(opts?: Pick<Options, 'entry'>): Options {
   };
 }
 
-export function iifeConfig(opts?: Pick<Options, 'entry'>): Options {
+export function iifeConfig(opts: Pick<Options, 'entry'> & { globalName: string }): Options {
   return {
-    entry: opts?.entry ?? defaultEntry,
+    entry: opts.entry ?? defaultEntry,
     format: 'iife',
     target: ['chrome91', 'firefox90', 'edge91', 'safari15', 'ios15', 'opera77'],
     outDir: 'dist',
     clean: true,
     bundle: true,
     minify: true,
+    globalName: opts.globalName,
   };
 }
