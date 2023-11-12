@@ -1,0 +1,26 @@
+{
+  "name": "react-cra4",
+  "private": true,
+  "scripts": {
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true SKIP_PREFLIGHT_CHECK=true NODE_OPTIONS=--openssl-legacy-provider BROWSER=none react-scripts start",
+    "test:bundle": "cross-env DISABLE_ESLINT_PLUGIN=true SKIP_PREFLIGHT_CHECK=true NODE_OPTIONS=--openssl-legacy-provider react-scripts build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@column-resizer/react": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^4.0.3"
+  }
+}

@@ -20,7 +20,8 @@
     "lint": "eslint . --ext .ts,.tsx --fix --max-warnings 0",
     "prepare": "husky install",
     "release": "run-s build:release bump-version",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "test:bundle": "pnpm run -r test:bundle"
   },
   "lint-staged": {
     "*.{ts,tsx,less,html}": [
@@ -34,6 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "bumpp": "^9.2.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
