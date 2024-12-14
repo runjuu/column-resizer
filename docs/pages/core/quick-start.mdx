@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tab, Tabs } from 'nextra-theme-docs';
+import { Tabs } from 'nextra/components';
 import { ColumnResizer } from '@column-resizer/core';
 
 # Quick Start
@@ -10,21 +10,21 @@ import { ColumnResizer } from '@column-resizer/core';
 
 {/* prettier-ignore */}
 <Tabs items={['pnpm', 'npm', 'yarn']}>
-  <Tab>
+  <Tabs.Tab>
     ```bash
     pnpm i @column-resizer/core
     ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
     ```bash
     npm i @column-resizer/core
     ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
     ```bash
     yarn add @column-resizer/core
     ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>
 
 ### Ready to Go!

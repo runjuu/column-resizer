@@ -10,7 +10,7 @@ import { useWatchColumnEvents, UseWatchColumnEventsConfig } from './use-watch-co
 export type ContainerProps = React.HTMLAttributes<HTMLDivElement> &
   UseWatchColumnEventsConfig &
   Partial<ColumnResizerConfig> & {
-    columnResizerRef?: React.RefObject<ColumnResizer>;
+    columnResizerRef?: React.RefObject<ColumnResizer | null>;
   };
 
 export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(

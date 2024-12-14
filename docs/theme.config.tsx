@@ -1,4 +1,4 @@
-import { DocsThemeConfig } from 'nextra-theme-docs';
+import { DocsThemeConfig, useConfig } from 'nextra-theme-docs';
 import { useRouter } from 'next/router';
 
 import packageJSON from '../package.json';
@@ -9,28 +9,23 @@ const config: DocsThemeConfig = {
   project: {
     link: 'https://github.com/Runjuu/column-resizer',
   },
-  useNextSeoProps() {
+  head() {
     const { route } = useRouter();
+    const { title } = useConfig();
 
-    return {
-      titleTemplate: route !== '/' ? '%s – Column Resizer' : '%s',
-    };
+    return (
+      <>
+        <title>{route !== '/' ? `${title} – Column Resizer` : title}</title>
+      </>
+    );
   },
   footer: {
-    text() {
+    content() {
       return (
         <div>
           <p>MIT © 2022 Runjuu</p>
         </div>
       );
-    },
-  },
-  sidebar: {
-    titleComponent: ({ title, type }) => {
-      if (type === 'separator') {
-        return <span className="cursor-default">{title}</span>;
-      }
-      return <>{title}</>;
     },
   },
 };

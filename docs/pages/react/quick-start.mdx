@@ -1,4 +1,4 @@
-import { Tab, Tabs } from 'nextra-theme-docs';
+import { Tabs } from 'nextra/components';
 import { Container, Section, Bar } from '@column-resizer/react';
 
 import { Center } from '../../components';
@@ -11,21 +11,21 @@ import { Center } from '../../components';
 
 {/* prettier-ignore */}
 <Tabs items={['pnpm', 'npm', 'yarn']}>
-  <Tab>
+  <Tabs.Tab>
     ```bash
     pnpm i @column-resizer/react
     ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
     ```bash
     npm i @column-resizer/react
     ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
     ```bash
     yarn add @column-resizer/react
     ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>
 
 ### Ready to Go!

@@ -2,8 +2,8 @@
   "name": "react-cra5",
   "private": true,
   "scripts": {
-    "start": "cross-env BROWSER=none react-scripts start",
-    "test:bundle": "cross-env react-scripts build"
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true BROWSER=none react-scripts start",
+    "test:bundle": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build"
   },
   "browserslist": {
     "production": [

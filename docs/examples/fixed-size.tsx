@@ -3,9 +3,9 @@ import React from 'react';
 import * as Resizer from '@column-resizer/react';
 
 export const FixedSize = () => (
-  <section>
+  <section className="space-y-6">
     <Resizer.Container className="h-[50vh] whitespace-nowrap">
-      <Resizer.Section className="flex items-center justify-center bg-[#80808080]" size={500}>
+      <Resizer.Section className="flex items-center justify-center bg-[#80808080]" size={300}>
         Fixed size.
         <br />
         (default is not responsive)
@@ -28,10 +28,10 @@ export const FixedSize = () => (
       </Resizer.Section>
     </Resizer.Container>
 
-    <Resizer.Container className="h-[50vh] whitespace-nowrap">
+    <Resizer.Container className="h-[50vh] text-center">
       <Resizer.Section
         className="flex items-center justify-center bg-[#80808080]"
-        size={500}
+        size={300}
         disableResponsive={false}
       >
         Fixed size.

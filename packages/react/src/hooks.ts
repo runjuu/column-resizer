@@ -23,7 +23,7 @@ export function useColumnResizer() {
 }
 
 export function useColumnResizerEvent<E extends Element, K extends keyof ColumnResizerEventMap>(
-  elmRef: React.RefObject<E>,
+  elmRef: React.RefObject<E | null>,
   key: K,
   callback?: (event: CustomEvent<ColumnResizerEventMap[K]>) => void,
 ) {
