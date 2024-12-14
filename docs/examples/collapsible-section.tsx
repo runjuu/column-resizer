@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, Section, Bar, Resizer, ColumnResizer } from '@column-resizer/react';
+import { Bar, ColumnResizer, Container, Resizer, Section } from '@column-resizer/react';
 
 function beforeApplyResizer(resizer: Resizer): void {
   if (resizer.getSectionSize(0) < 150) {

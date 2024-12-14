@@ -1,5 +1,3 @@
-import { BarActionType, ItemType, SizeRelatedInfo } from './types';
-import { Resizer } from './resizer';
 import {
   ColumnBar,
   ColumnBarConfig,
@@ -7,19 +5,21 @@ import {
   ColumnSectionConfig,
   DispatchBarAction,
 } from './column-items';
+import { Resizer } from './resizer';
+import { BarActionType, ItemType, SizeRelatedInfo } from './types';
 import {
   BarActionScanResult,
+  ColumnItemsCache,
+  ResizerEventHub,
+  ResizerItems,
   calculateCoordinateOffset,
   collectSizeRelatedInfo,
-  ColumnItemsCache,
   createBarStore,
   dispatchResizerEvent,
   isDisabledResponsive,
   isSolidItem,
   parseResizerItems,
   resizerItemAttributes,
-  ResizerItems,
-  ResizerEventHub,
 } from './utils';
 
 export type { ColumnSectionConfig, ColumnBarConfig };

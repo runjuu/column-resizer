@@ -1,6 +1,6 @@
-import React from 'react';
 import cls from 'clsx';
 import Link, { LinkProps } from 'next/link';
+import React from 'react';
 
 import styles from './index.module.css';
 

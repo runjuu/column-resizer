@@ -1,10 +1,10 @@
 import { BarAction, BarActionType, Coordinate, ItemType } from '../types';
 import {
   DISABLE_PASSIVE,
+  ParsedResizerItem,
   dispatchResizerEvent,
   isValidNumber,
   parseItemConfig,
-  ParsedResizerItem,
 } from '../utils';
 
 import { ColumnInstance } from './column-instance';

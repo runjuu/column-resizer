@@ -1,7 +1,7 @@
 import { ColumnSectionConfig } from '@column-resizer/core';
 import * as React from 'react';
 
-import { useForwardedRef, useColumnResizer, useColumnResizerEvent } from '../hooks';
+import { useColumnResizer, useColumnResizerEvent, useForwardedRef } from '../hooks';
 
 export type SectionProps = React.HTMLAttributes<HTMLDivElement> &
   ColumnSectionConfig & {

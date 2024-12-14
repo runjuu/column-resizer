@@ -2,10 +2,10 @@ import { ColumnResizer, ColumnResizerConfig } from '@column-resizer/core';
 import * as React from 'react';
 
 import { ColumnResizerContext } from '../context';
-import { useIsomorphicLayoutEffect, useForwardedRef, useInitColumnResizer } from '../hooks';
+import { useForwardedRef, useInitColumnResizer, useIsomorphicLayoutEffect } from '../hooks';
 import { HooksRenderer } from '../hooks-renderer';
 
-import { useWatchColumnEvents, UseWatchColumnEventsConfig } from './use-watch-column-events';
+import { UseWatchColumnEventsConfig, useWatchColumnEvents } from './use-watch-column-events';
 
 export type ContainerProps = React.HTMLAttributes<HTMLDivElement> &
   UseWatchColumnEventsConfig &

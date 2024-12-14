@@ -3,7 +3,7 @@ import { ColumnBarConfig } from '@column-resizer/core';
 import * as React from 'react';
 
 import { useColumnResizer, useColumnResizerEvent, useForwardedRef } from '../hooks';
-import { StyledInteractiveArea, ExpandInteractiveArea } from './styled';
+import { ExpandInteractiveArea, StyledInteractiveArea } from './styled';
 
 export type { ExpandInteractiveArea };
 

@@ -1,5 +1,5 @@
 import { SizeRelatedInfo } from './types';
-import { getNextSizeRelatedInfo, BarActionScanResult } from './utils';
+import { BarActionScanResult, getNextSizeRelatedInfo } from './utils';
 
 type ResizeResult = SizeRelatedInfo | BarActionScanResult;
 

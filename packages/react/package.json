@@ -21,10 +21,7 @@
   "main": "dist/legacy/index.cjs",
   "module": "dist/legacy/index.js",
   "sideEffects": false,
-  "files": [
-    "dist",
-    "package.json"
-  ],
+  "files": ["dist", "package.json"],
   "scripts": {
     "build": "npm run clean && tsup",
     "clean": "rm -rf ./dist"

@@ -9,7 +9,7 @@
   padding-left: 1.5rem;
   counter-reset: step;
   border-left: 1px solid;
-  border-color: rgb(229 231 235/1);
+  border-color: rgb(229 231 235 / 1);
   margin-bottom: 3rem;
 }
 .steps-container h3 {

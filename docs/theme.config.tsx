@@ -1,5 +1,5 @@
-import { DocsThemeConfig, useConfig } from 'nextra-theme-docs';
 import { useRouter } from 'next/router';
+import { DocsThemeConfig, useConfig } from 'nextra-theme-docs';
 
 import packageJSON from '../package.json';
 

@@ -1,4 +1,4 @@
-import { Container, Section, Bar } from '@column-resizer/react';
+import { Bar, Container, Section } from '@column-resizer/react';
 
 export const App = () => {
   return (

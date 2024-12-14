@@ -14,22 +14,16 @@
     "build:release": "turbo run build:release --force",
     "bump-version": "bumpp package.json packages/*/package.json",
     "clean": "turbo run clean",
-    "format": "run-p format:code format:package",
-    "format:code": "prettier '@(docs|packages)/**/*.@(ts|tsx|html|json)' --write",
-    "format:package": "format-package 'package.json' -w -c format-package.json",
+    "format": "biome check --write",
     "lint": "turbo run lint",
-    "prepare": "husky install",
+    "prepare": "lefthook install",
     "release": "run-s build:release bump-version",
     "test": "turbo run test",
     "test:bundle": "pnpm run -r test:bundle"
   },
-  "lint-staged": {
-    "*.{ts,tsx,less,html}": [
-      "prettier --write"
-    ]
-  },
   "packageManager": "pnpm@9.15.0",
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@swc/core": "^1.10.1",
     "@types/react": "19.0.1",
     "@types/react-dom": "19.0.2",
@@ -37,13 +31,8 @@
     "@typescript-eslint/parser": "^8.18.0",
     "bumpp": "^9.9.1",
     "cross-env": "^7.0.3",
-    "eslint": "^9.17.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.37.2",
     "format-package": "^7.0.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
+    "lefthook": "^1.9.2",
     "npm-run-all": "^4.1.5",
     "prettier": "3.4.2",
     "tslib": "^2.8.1",

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, Section, Bar, Resizer } from '@column-resizer/react';
+import { Bar, Container, Resizer, Section } from '@column-resizer/react';
 
 function onResizing(resizer: Resizer): void {
   if (resizer.isBarActivated(0)) {

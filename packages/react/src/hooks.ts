@@ -1,5 +1,5 @@
+import { ColumnResizer, ColumnResizerConfig, ColumnResizerEventMap } from '@column-resizer/core';
 import React, { MutableRefObject, Ref } from 'react';
-import { ColumnResizerEventMap, ColumnResizer, ColumnResizerConfig } from '@column-resizer/core';
 
 import { ColumnResizerContext } from './context';
 

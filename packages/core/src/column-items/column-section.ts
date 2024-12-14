@@ -1,5 +1,5 @@
-import { SizeInfo, ItemType } from '../types';
-import { isValidNumber, dispatchResizerEvent, parseItemConfig, ParsedResizerItem } from '../utils';
+import { ItemType, SizeInfo } from '../types';
+import { ParsedResizerItem, dispatchResizerEvent, isValidNumber, parseItemConfig } from '../utils';
 
 import { ColumnInstance } from './column-instance';
 

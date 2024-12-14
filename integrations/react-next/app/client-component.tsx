@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Section, Bar } from '@column-resizer/react';
+import { Bar, Container, Section } from '@column-resizer/react';
 
 export function ClientComponent() {
   return (

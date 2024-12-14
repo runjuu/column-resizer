@@ -1,7 +1,7 @@
 import { BarAction, BarActionType, Coordinate, SizeInfo, SizeRelatedInfo } from '../types';
 
-import { getNextSizeRelatedInfo } from './get-next-size-related-info';
 import { DEFAULT_COORDINATE_OFFSET } from './calculate-coordinate-offset';
+import { getNextSizeRelatedInfo } from './get-next-size-related-info';
 
 export interface BarActionScanResult extends SizeRelatedInfo {
   barIndex: number;
