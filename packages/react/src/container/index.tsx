@@ -17,6 +17,7 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
   (
     {
       vertical = false,
+      rtl = false,
       onActivate,
       beforeApplyResizer,
       afterResizing,
@@ -29,6 +30,7 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
     const containerRef = useForwardedRef<HTMLDivElement | null>(null, ref);
     const columnResizer = useInitColumnResizer({
       vertical,
+      rtl,
       beforeApplyResizer,
     });
 

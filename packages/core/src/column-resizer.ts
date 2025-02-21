@@ -26,6 +26,7 @@ export type { ColumnSectionConfig, ColumnBarConfig };
 
 export type ColumnResizerConfig = {
   vertical: boolean;
+  rtl?: boolean;
   beforeApplyResizer?: (resizer: Resizer) => void;
 };
 
@@ -82,6 +83,7 @@ export class ColumnResizer {
       calculateOffset: (current, original) =>
         calculateCoordinateOffset(current, original)[this.axis],
       getSizeRelatedInfo: () => this.makeSizeInfos(),
+      flipResizeMoveDirection: config.rtl && !config.vertical,
     });
   }
 

@@ -6,6 +6,7 @@ import { ColumnResizer, Resizer } from '@column-resizer/react';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   vertical?: boolean;
+  rtl?: boolean;
   onActivate?: () => void;
   beforeApplyResizer?: (resizer: Resizer) => void;
   afterResizing?: () => void;
@@ -22,6 +23,14 @@ type vertical = boolean;
 ```
 
 Determine whether using vertical layout or not, default is `false`.
+
+### rtl
+
+```typescript
+type rtl = boolean;
+```
+
+Determine whether using RTL (right to left) horizontal direction, default is `false`.
 
 ### onActivate
 

@@ -14,6 +14,7 @@ export interface BarActionScanResult extends SizeRelatedInfo {
 interface ScanBarActionConfig {
   getSizeRelatedInfo: () => SizeRelatedInfo;
   calculateOffset: (current: Coordinate, original: Coordinate) => number;
+  flipResizeMoveDirection?: boolean;
 }
 
 const DEFAULT_BAR_ACTION_SCAN_RESULT: BarActionScanResult = {
@@ -61,7 +62,12 @@ export function createBarStore(config: ScanBarActionConfig) {
 
             return {
               ...result,
-              ...getNextSizeRelatedInfo(action.barIndex, offset, currentState.defaultSizeInfoArray),
+              ...getNextSizeRelatedInfo(
+                action.barIndex,
+                offset,
+                currentState.defaultSizeInfoArray,
+                config.flipResizeMoveDirection,
+              ),
               offset,
               originalCoordinate: currentState.originalCoordinate,
               defaultSizeInfoArray: currentState.defaultSizeInfoArray,

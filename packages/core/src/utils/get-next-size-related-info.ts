@@ -7,11 +7,12 @@ export function getNextSizeRelatedInfo(
   barIndex: number,
   offset: number,
   sizeInfoArray: SizeInfo[],
+  flipResizeMoveDirection: boolean | undefined,
 ): SizeRelatedInfo {
   const { collect, getResult } = collectSizeRelatedInfo();
 
-  const leftResult = resize(barIndex, offset, -1, sizeInfoArray);
-  const rightResult = resize(barIndex, -offset, 1, sizeInfoArray);
+  const leftResult = resize(barIndex, offset, flipResizeMoveDirection ? 1 : -1, sizeInfoArray);
+  const rightResult = resize(barIndex, -offset, flipResizeMoveDirection ? -1 : 1, sizeInfoArray);
 
   const leftUsedOffset = offset - leftResult.remainingOffset;
   const rightUsedOffset = -offset - rightResult.remainingOffset;

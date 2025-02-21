@@ -8,13 +8,14 @@ export const useIsomorphicLayoutEffect =
 
 export function useInitColumnResizer({
   vertical,
+  rtl,
   beforeApplyResizer: beforeApplyResizer_,
 }: ColumnResizerConfig) {
   const beforeApplyResizer = useRefCallback(beforeApplyResizer_);
 
   return React.useMemo(
-    () => new ColumnResizer({ vertical, beforeApplyResizer }),
-    [vertical, beforeApplyResizer],
+    () => new ColumnResizer({ vertical, beforeApplyResizer, rtl }),
+    [vertical, beforeApplyResizer, rtl],
   );
 }
 
