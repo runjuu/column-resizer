@@ -44,6 +44,7 @@ export class Resizer {
       getBarIndex(indexOfBar),
       config.withOffset,
       this.resizeResult.sizeInfoArray,
+      undefined,
     );
   }
 

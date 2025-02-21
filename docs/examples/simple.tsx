@@ -2,9 +2,9 @@ import React from 'react';
 
 import * as Resizer from '@column-resizer/react';
 
-export const Simple = () => (
+export const Simple = ({ rtl }: { rtl?: boolean }) => (
   <section>
-    <Resizer.Container className="h-[50vh] whitespace-nowrap">
+    <Resizer.Container className="h-[50vh] whitespace-nowrap" rtl={rtl}>
       <Resizer.Section className="flex items-center justify-center bg-[#80808080]" minSize={100} />
       <Resizer.Bar
         size={10}

@@ -5,6 +5,7 @@ export default {
   'max-min-size': 'Max Min Size',
   'fixed-size': 'Fixed Size',
   nesting: 'Nesting',
+  'right-to-left': 'Right to Left',
   '--- Custom Behavior ---': {
     type: 'separator',
     title: 'Custom Behavior',
