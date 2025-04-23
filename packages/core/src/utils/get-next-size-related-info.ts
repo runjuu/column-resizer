@@ -10,9 +10,10 @@ export function getNextSizeRelatedInfo(
   flipResizeMoveDirection: boolean | undefined,
 ): SizeRelatedInfo {
   const { collect, getResult } = collectSizeRelatedInfo();
+  const trend = flipResizeMoveDirection ? 1 : -1;
 
-  const leftResult = resize(barIndex, offset, flipResizeMoveDirection ? 1 : -1, sizeInfoArray);
-  const rightResult = resize(barIndex, -offset, flipResizeMoveDirection ? -1 : 1, sizeInfoArray);
+  const leftResult = resize(barIndex, offset, trend, sizeInfoArray);
+  const rightResult = resize(barIndex, -offset, -trend as Trend, sizeInfoArray);
 
   const leftUsedOffset = offset - leftResult.remainingOffset;
   const rightUsedOffset = -offset - rightResult.remainingOffset;
@@ -27,11 +28,11 @@ export function getNextSizeRelatedInfo(
     collectAll(leftResult.sizeInfoArray, rightResult.sizeInfoArray);
   } else if (Math.abs(leftUsedOffset) < Math.abs(rightUsedOffset)) {
     // left side sections was limited
-    const newRightResult = resize(barIndex, -leftUsedOffset, 1, sizeInfoArray);
+    const newRightResult = resize(barIndex, -leftUsedOffset, -trend as Trend, sizeInfoArray);
     collectAll(leftResult.sizeInfoArray, newRightResult.sizeInfoArray);
   } else {
     // right side sections was limited
-    const newLeftResult = resize(barIndex, -rightUsedOffset, -1, sizeInfoArray);
+    const newLeftResult = resize(barIndex, -rightUsedOffset, trend, sizeInfoArray);
     collectAll(newLeftResult.sizeInfoArray, rightResult.sizeInfoArray);
   }
 
