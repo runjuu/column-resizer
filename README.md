@@ -6,6 +6,7 @@ A set of library for multi-column(row) resizing. Works in every modern browser [
 
 - Support both mouse and touch events
 - Support server-side rendering
+- Support RTL (right-to-left) layout (Contributed by [@mike-shtil-loop](https://github.com/mike-shtil-loop))
 - No additional dependencies, packages size under 5 kB after min-zipping
 - Easy to customize resize behavior
 
