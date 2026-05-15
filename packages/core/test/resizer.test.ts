@@ -94,6 +94,33 @@ describe('Resizer', () => {
     expect(currentSizes(resizer)).toEqual([50, 10, 250, 10, 300]);
   });
 
+  it('falls back to the right bar when the first section prefers its left bar', () => {
+    const resizer = new Resizer(
+      sizeResult([
+        sizeInfo(100),
+        sizeInfo(10, { isSolid: true, disableResponsive: true }),
+        sizeInfo(200),
+      ]),
+    );
+
+    expect(() => resizer.resizeSection(0, { toSize: 130, preferMoveLeftBar: true })).not.toThrow();
+    expect(currentSizes(resizer)).toEqual([130, 10, 170]);
+  });
+
+  it('ignores out-of-range bar movement', () => {
+    const resizer = new Resizer(
+      sizeResult([
+        sizeInfo(100),
+        sizeInfo(10, { isSolid: true, disableResponsive: true }),
+        sizeInfo(200),
+      ]),
+    );
+
+    expect(() => resizer.moveBar(-1, { withOffset: 25 })).not.toThrow();
+    expect(() => resizer.moveBar(1, { withOffset: 25 })).not.toThrow();
+    expect(currentSizes(resizer)).toEqual([100, 10, 200]);
+  });
+
   it('reports resized sections and active bars from a bar action scan result', () => {
     const defaultSizeInfoArray = [
       sizeInfo(100),
@@ -120,6 +147,31 @@ describe('Resizer', () => {
     expect(resizer.isSectionResized(1)).toBe(true);
     expect(resizer.isBarActivated(0)).toBe(true);
     expect(resizer.isBarActivated(1)).toBe(false);
+  });
+
+  it('reports out-of-range sections as not resized', () => {
+    const defaultSizeInfoArray = [
+      sizeInfo(100),
+      sizeInfo(10, { isSolid: true, disableResponsive: true }),
+      sizeInfo(200),
+    ];
+    const scanResult: BarActionScanResult = {
+      type: BarActionType.MOVE,
+      barIndex: 1,
+      offset: 20,
+      originalCoordinate: { x: 0, y: 0 },
+      defaultSizeInfoArray,
+      sizeInfoArray: [
+        sizeInfo(120, { elm: defaultSizeInfoArray[0].elm }),
+        sizeInfo(10, { elm: defaultSizeInfoArray[1].elm, isSolid: true, disableResponsive: true }),
+        sizeInfo(180, { elm: defaultSizeInfoArray[2].elm }),
+      ],
+      flexGrowRatio: 1,
+    };
+
+    const resizer = new Resizer(scanResult);
+
+    expect(resizer.isSectionResized(99)).toBe(false);
   });
 
   it('does not mutate sizes after being discarded', () => {

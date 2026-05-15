@@ -21,17 +21,25 @@ export class Resizer {
       return;
     }
 
+    if (!Number.isInteger(indexOfSection) || !Number.isFinite(config.toSize) || config.toSize < 0) {
+      return;
+    }
+
     const sectionID = getSectionIndex(indexOfSection);
     const currentSize = this.getSize(sectionID);
 
-    if (currentSize >= 0 && config.toSize >= 0) {
+    if (currentSize >= 0) {
       const offset = config.toSize - currentSize;
+      const rightBar = { indexOfBar: indexOfSection, withOffset: offset };
+      const leftBar = { indexOfBar: indexOfSection - 1, withOffset: -offset };
+      const shouldPreferLeft =
+        sectionID === this.resizeResult.sizeInfoArray.length - 1 || config.preferMoveLeftBar;
 
-      if (sectionID === this.resizeResult.sizeInfoArray.length - 1 || config.preferMoveLeftBar) {
-        this.moveBar(indexOfSection - 1, { withOffset: -offset });
-      } else {
-        this.moveBar(indexOfSection, { withOffset: offset });
-      }
+      const bar = (shouldPreferLeft ? [leftBar, rightBar] : [rightBar, leftBar]).find(
+        ({ indexOfBar }) => this.getValidBarIndex(indexOfBar) !== null,
+      );
+
+      if (bar) this.moveBar(bar.indexOfBar, { withOffset: bar.withOffset });
     }
   }
 
@@ -40,8 +48,14 @@ export class Resizer {
       return;
     }
 
+    const barIndex = this.getValidBarIndex(indexOfBar);
+
+    if (barIndex === null) {
+      return;
+    }
+
     this.resizeResult = getNextSizeRelatedInfo(
-      getBarIndex(indexOfBar),
+      barIndex,
       config.withOffset,
       this.resizeResult.sizeInfoArray,
       undefined,
@@ -56,9 +70,9 @@ export class Resizer {
     const sectionID = getSectionIndex(indexOfSection);
 
     if ('defaultSizeInfoArray' in this.resizeResult) {
-      return (
-        this.getSize(sectionID) !== this.resizeResult.defaultSizeInfoArray[sectionID].currentSize
-      );
+      const defaultSizeInfo = this.resizeResult.defaultSizeInfoArray[sectionID];
+
+      return defaultSizeInfo ? this.getSize(sectionID) !== defaultSizeInfo.currentSize : false;
     } else {
       return false;
     }
@@ -89,5 +103,19 @@ export class Resizer {
   private getSize(index: number): number | -1 {
     const sizeInfo = this.resizeResult.sizeInfoArray[index];
     return sizeInfo ? sizeInfo.currentSize : -1;
+  }
+
+  private getValidBarIndex(indexOfBar: number): number | null {
+    if (!Number.isInteger(indexOfBar)) {
+      return null;
+    }
+
+    const barIndex = getBarIndex(indexOfBar);
+
+    if (barIndex > 0 && barIndex < this.resizeResult.sizeInfoArray.length - 1) {
+      return this.resizeResult.sizeInfoArray[barIndex] ? barIndex : null;
+    } else {
+      return null;
+    }
   }
 }
