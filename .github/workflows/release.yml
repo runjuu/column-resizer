@@ -8,6 +8,10 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write
     env:
       CI: true
 
@@ -25,13 +29,6 @@ jobs:
           node-version: 'lts/*'
           cache: 'pnpm'
 
-      - name: Setup npm auth
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: |
-          pnpm config set '//registry.npmjs.org/:_authToken' "${NPM_AUTH_TOKEN}"
-          pnpm whoami
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -39,6 +36,4 @@ jobs:
         run: pnpm run build:release
 
       - name: Publish packages
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: pnpm -r publish --access public --no-git-checks
