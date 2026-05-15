@@ -23,11 +23,13 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
       afterResizing,
       columnResizerRef,
       style,
+      children,
       ...props
     },
     ref,
   ) => {
     const containerRef = useForwardedRef<HTMLDivElement | null>(null, ref);
+    const didCommitRef = React.useRef(false);
     const columnResizer = useInitColumnResizer({
       vertical,
       rtl,
@@ -35,9 +37,21 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
     });
 
     useIsomorphicLayoutEffect(() => {
+      didCommitRef.current = false;
       columnResizer.init(containerRef.current);
-      return () => columnResizer.dispose();
+      return () => {
+        didCommitRef.current = false;
+        columnResizer.dispose();
+      };
     }, [columnResizer]);
+
+    useIsomorphicLayoutEffect(() => {
+      if (didCommitRef.current) {
+        columnResizer.refresh();
+      } else {
+        didCommitRef.current = true;
+      }
+    }, [children, columnResizer]);
 
     React.useImperativeHandle(columnResizerRef, () => columnResizer, [columnResizer]);
 
@@ -48,7 +62,9 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
           params={[containerRef, { onActivate, afterResizing }]}
         >
           {() => (
-            <div ref={containerRef} {...props} style={columnResizer.styles.container(style)} />
+            <div ref={containerRef} {...props} style={columnResizer.styles.container(style)}>
+              {children}
+            </div>
           )}
         </HooksRenderer>
       </ColumnResizerContext.Provider>

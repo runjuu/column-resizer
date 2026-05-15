@@ -92,19 +92,7 @@ export class ColumnResizer {
     this.container = container;
 
     if (container) {
-      this.itemsCache.update(
-        parseResizerItems(container).map((item) => {
-          switch (item.type) {
-            case ItemType.BAR:
-              return new ColumnBar(item, this.dispatchBarAction);
-            case ItemType.SECTION:
-              return new ColumnSection(item);
-          }
-        }),
-      );
-
-      this.initStyles(container, this.itemsCache.getItems());
-      this.sizeRelatedInfoChange(this.makeSizeInfos());
+      this.refresh();
 
       this.barStore.subscribe((state) => {
         this.monitorBarStatusChanges(state);
@@ -126,6 +114,26 @@ export class ColumnResizer {
 
   applyResizer(resizer: Resizer): void {
     this.sizeRelatedInfoChange(resizer.getResult());
+  }
+
+  refresh() {
+    if (!this.container) {
+      return;
+    }
+
+    this.itemsCache.update(
+      parseResizerItems(this.container).map((item) => {
+        switch (item.type) {
+          case ItemType.BAR:
+            return new ColumnBar(item, this.dispatchBarAction);
+          case ItemType.SECTION:
+            return new ColumnSection(item);
+        }
+      }),
+    );
+
+    this.initStyles(this.container, this.itemsCache.getItems());
+    this.sizeRelatedInfoChange(this.makeSizeInfos());
   }
 
   private dispatchBarAction: DispatchBarAction = (elm, action) => {
