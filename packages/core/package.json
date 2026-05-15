@@ -23,7 +23,7 @@
   "sideEffects": false,
   "files": ["dist", "package.json", "README.md"],
   "scripts": {
-    "build": "npm run clean && tsup",
+    "build": "npm run clean && tsdown",
     "clean": "rm -rf ./dist",
     "test": "vitest run --config ../../vitest.config.ts packages/core"
   },

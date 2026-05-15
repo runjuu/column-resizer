@@ -8,7 +8,8 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "target": "ESNext"
   }
