@@ -9,20 +9,20 @@
   "dependencies": {
     "@column-resizer/core": "workspace:*",
     "@column-resizer/react": "workspace:*",
-    "@types/node": "22.10.2",
-    "@types/react": "19.0.1",
-    "@types/react-dom": "19.0.2",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "clsx": "^2.1.1",
-    "next": "15.1.0",
-    "nextra": "^3.2.5",
-    "nextra-theme-docs": "^3.2.5",
-    "react": "^19.0.0",
-    "react-dom": "19.0.0",
-    "typescript": "^5.7.2"
+    "next": "15.5.18",
+    "nextra": "^3.3.1",
+    "nextra-theme-docs": "^3.3.1",
+    "react": "^19.2.6",
+    "react-dom": "19.2.6",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16"
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^3.4.19"
   }
 }
