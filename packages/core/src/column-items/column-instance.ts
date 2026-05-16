@@ -18,6 +18,10 @@ export abstract class ColumnInstance<Config = unknown> {
     this._observer.observe(elm, { attributes: true, attributeFilter: ['data-item-config'] });
   }
 
+  refreshConfig() {
+    this._config = this.getConfig();
+  }
+
   destroy() {
     this._observer.disconnect();
   }

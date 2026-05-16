@@ -67,6 +67,35 @@ function ResizableColumns({
   );
 }
 
+function RerenderOnSizeChangeColumns({
+  afterResizing,
+  onLeftSizeChanged,
+}: {
+  afterResizing: () => void;
+  onLeftSizeChanged: (size: number) => void;
+}) {
+  const hasForcedRenderRef = React.useRef(false);
+  const [, forceRender] = React.useReducer((count: number) => count + 1, 0);
+
+  return (
+    <Container afterResizing={afterResizing}>
+      <Section
+        data-testid="left"
+        onSizeChanged={(size) => {
+          onLeftSizeChanged(size);
+
+          if (!hasForcedRenderRef.current) {
+            hasForcedRenderRef.current = true;
+            forceRender();
+          }
+        }}
+      />
+      <Bar data-testid="first-bar" size={10} />
+      <Section data-testid="middle" />
+    </Container>
+  );
+}
+
 let root: TestRoot;
 
 beforeEach(() => {
@@ -127,5 +156,34 @@ describe('Container dynamic children', () => {
     document.dispatchEvent(mouse('mouseup', 25));
 
     expect(onRightSizeChanged).toHaveBeenCalledWith(275);
+  });
+
+  it('keeps the active bar wired when a size change rerenders during drag', () => {
+    const afterResizing = vi.fn();
+    const onLeftSizeChanged = vi.fn();
+
+    root.render(
+      <RerenderOnSizeChangeColumns
+        afterResizing={afterResizing}
+        onLeftSizeChanged={onLeftSizeChanged}
+      />,
+    );
+
+    act(() => {
+      getByTestId(root.container, 'first-bar').dispatchEvent(mouse('mousedown', 0));
+    });
+    act(() => {
+      document.dispatchEvent(mouse('mousemove', 25));
+    });
+    act(() => {
+      document.dispatchEvent(mouse('mousemove', 40));
+    });
+    act(() => {
+      document.dispatchEvent(mouse('mouseup', 40));
+    });
+
+    expect(onLeftSizeChanged).toHaveBeenCalledWith(125);
+    expect(onLeftSizeChanged).toHaveBeenCalledWith(140);
+    expect(afterResizing).toHaveBeenCalledTimes(1);
   });
 });

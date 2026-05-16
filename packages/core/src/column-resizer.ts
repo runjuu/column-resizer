@@ -123,6 +123,12 @@ export class ColumnResizer {
 
     this.itemsCache.update(
       parseResizerItems(this.container).map((item) => {
+        const reusableItem = this.itemsCache.getReusableItem(item);
+
+        if (reusableItem) {
+          return reusableItem;
+        }
+
         switch (item.type) {
           case ItemType.BAR:
             return new ColumnBar(item, this.dispatchBarAction);
