@@ -1,0 +1,33 @@
+{
+  "name": "@column-resizer/resize-dom",
+  "version": "1.4.0",
+  "license": "MIT",
+  "repository": "github:Runjuu/column-resizer",
+  "author": "Runjuu",
+  "sideEffects": false,
+  "files": ["dist", "package.json"],
+  "scripts": {
+    "build": "npm run clean && tsdown",
+    "clean": "rm -rf ./dist",
+    "test": "vitest run --config ../../vitest.config.ts packages/resize-dom"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/modern/index.d.ts",
+        "default": "./dist/modern/index.js"
+      },
+      "require": {
+        "types": "./dist/modern/index.d.cts",
+        "default": "./dist/modern/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "types": "dist/legacy/index.d.ts",
+  "dependencies": {
+    "@column-resizer/resize-graph": "workspace:*",
+    "@column-resizer/resize-kernel": "workspace:*"
+  }
+}

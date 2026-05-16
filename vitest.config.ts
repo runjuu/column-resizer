@@ -13,6 +13,21 @@ export default defineConfig({
       '@column-resizer/react': fileURLToPath(
         new URL('./packages/react/src/index.ts', import.meta.url),
       ),
+      '@column-resizer/resize-kernel': fileURLToPath(
+        new URL('./packages/resize-kernel/src/index.ts', import.meta.url),
+      ),
+      '@column-resizer/resize-graph': fileURLToPath(
+        new URL('./packages/resize-graph/src/index.ts', import.meta.url),
+      ),
+      '@column-resizer/resize-dom': fileURLToPath(
+        new URL('./packages/resize-dom/src/index.ts', import.meta.url),
+      ),
+      '@column-resizer/resize-react': fileURLToPath(
+        new URL('./packages/resize-react/src/index.tsx', import.meta.url),
+      ),
+      '@column-resizer/resize-testing': fileURLToPath(
+        new URL('./packages/resize-testing/src/index.ts', import.meta.url),
+      ),
     },
   },
   test: {

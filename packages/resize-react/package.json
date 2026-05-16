@@ -1,0 +1,40 @@
+{
+  "name": "@column-resizer/resize-react",
+  "version": "1.4.0",
+  "license": "MIT",
+  "repository": "github:Runjuu/column-resizer",
+  "author": "Runjuu",
+  "sideEffects": false,
+  "files": ["dist", "package.json"],
+  "scripts": {
+    "build": "npm run clean && tsdown",
+    "clean": "rm -rf ./dist",
+    "test": "vitest run --config ../../vitest.config.ts packages/resize-react"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/modern/index.d.ts",
+        "default": "./dist/modern/index.js"
+      },
+      "require": {
+        "types": "./dist/modern/index.d.cts",
+        "default": "./dist/modern/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "types": "dist/legacy/index.d.ts",
+  "dependencies": {
+    "@column-resizer/resize-dom": "workspace:*",
+    "@column-resizer/resize-graph": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
