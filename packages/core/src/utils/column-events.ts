@@ -20,7 +20,16 @@ export class ResizerEventHub {
   ): DisposeFn => {
     elm?.addEventListener(key, callback as EventListener);
 
-    const disposeFn = () => elm?.removeEventListener(key, callback as EventListener);
+    let isDisposed = false;
+    const disposeFn = () => {
+      if (isDisposed) {
+        return;
+      }
+
+      isDisposed = true;
+      elm?.removeEventListener(key, callback as EventListener);
+      this.disposeFnSet.delete(disposeFn);
+    };
 
     this.disposeFnSet.add(disposeFn);
 

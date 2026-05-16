@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { BarActionType, ItemType, SizeInfo } from '../src/types';
 import {
   BarActionScanResult,
+  ResizerEventHub,
   calculateCoordinateOffset,
   collectSizeRelatedInfo,
   createBarStore,
@@ -197,5 +198,24 @@ describe('bar store', () => {
       type: BarActionType.DEACTIVATE,
       discard: true,
     });
+  });
+});
+
+describe('resizer events', () => {
+  it('removes disposed watchers from the reset queue', () => {
+    const eventHub = new ResizerEventHub();
+    const elm = document.createElement('div');
+    const onClick = vi.fn();
+    const removeEventListener = vi.spyOn(elm, 'removeEventListener');
+
+    const dispose = eventHub.watchResizerEvent(elm, 'bar:click', onClick);
+    dispose();
+    dispose();
+    eventHub.reset();
+
+    elm.dispatchEvent(new CustomEvent('bar:click', { detail: null }));
+
+    expect(onClick).not.toHaveBeenCalled();
+    expect(removeEventListener).toHaveBeenCalledTimes(1);
   });
 });
