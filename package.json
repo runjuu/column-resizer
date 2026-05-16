@@ -15,7 +15,7 @@
     "bump-version": "bumpp package.json packages/*/package.json",
     "clean": "turbo run clean",
     "format": "biome check --write",
-    "lint": "turbo run lint",
+    "lint": "biome check .",
     "prepare": "lefthook install",
     "release": "run-s build:release bump-version",
     "test": "turbo run test",
