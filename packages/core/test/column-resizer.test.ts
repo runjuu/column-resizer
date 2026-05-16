@@ -140,6 +140,35 @@ describe('ColumnResizer DOM behavior', () => {
     expect(Number(rightSection.style.flexGrow)).toBeCloseTo(4 / 3);
   });
 
+  it('keeps sized sections non-responsive when disableResponsive is omitted', () => {
+    const columnResizer = createColumnResizer({ vertical: false });
+    const container = document.createElement('div');
+    const leftSection = appendSection(columnResizer, container, { size: 100 }, 100);
+    appendBar(columnResizer, container, { size: 10 }, 10);
+    const rightSection = appendSection(columnResizer, container, {}, 200);
+
+    columnResizer.init(container);
+
+    expect(leftSection.style.flexGrow).toBe('0');
+    expect(leftSection.style.flexShrink).toBe('0');
+    expect(leftSection.style.flexBasis).toBe('100px');
+    expect(rightSection.style.flexBasis).toBe('0px');
+    expect(rightSection.style.flexGrow).toBe('1');
+  });
+
+  it('uses configured section sizes when DOM measurements are zero during initialization', () => {
+    const columnResizer = createColumnResizer({ vertical: false });
+    const container = document.createElement('div');
+    const section = appendSection(columnResizer, container, { defaultSize: 100 }, 0);
+
+    columnResizer.init(container);
+
+    expect(columnResizer.getResizer().getSectionSize(0)).toBe(100);
+    expect(columnResizer.getResizer().getResult().flexGrowRatio).toBe(1 / 100);
+    expect(section.style.flexGrow).toBe('1');
+    expect(section.style.flexBasis).toBe('0px');
+  });
+
   it('drags a bar to resize neighboring sections and emit lifecycle events', () => {
     const columnResizer = createColumnResizer({ vertical: false });
     const container = document.createElement('div');

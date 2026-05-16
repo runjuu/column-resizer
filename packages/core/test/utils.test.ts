@@ -120,6 +120,17 @@ describe('size collection and resizing', () => {
     });
   });
 
+  it('does not create an infinite flex growth ratio for zero-size responsive children', () => {
+    const { collect, getResult } = collectSizeRelatedInfo();
+
+    collect(sizeInfo(0));
+
+    expect(getResult()).toMatchObject({
+      sizeInfoArray: expect.any(Array),
+      flexGrowRatio: 0,
+    });
+  });
+
   it('resizes both sides of a bar and preserves total responsive size', () => {
     const result = getNextSizeRelatedInfo(
       1,

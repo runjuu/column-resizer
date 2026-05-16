@@ -18,6 +18,7 @@ import {
   dispatchResizerEvent,
   isDisabledResponsive,
   isSolidItem,
+  isValidNumber,
   parseResizerItems,
   resizerItemAttributes,
 } from './utils';
@@ -190,11 +191,13 @@ export class ColumnResizer {
 
     this.itemsCache.getItems().forEach((item) => {
       if (item instanceof ColumnBar) {
+        const measuredSize = item.elm.getBoundingClientRect()[this.dimension];
+
         collect({
           elm: item.elm,
           disableResponsive: true,
           isSolid: true,
-          currentSize: item.elm.getBoundingClientRect()[this.dimension],
+          currentSize: isValidNumber(measuredSize) ? measuredSize : item.config.size,
         });
       }
 
@@ -205,7 +208,7 @@ export class ColumnResizer {
           minSize: item.config.minSize,
           disableResponsive: isDisabledResponsive(item.config),
           isSolid: isSolidItem(item.config),
-          currentSize: item.elm.getBoundingClientRect()[this.dimension],
+          currentSize: item.getCurrentSize(this.dimension),
         });
       }
     });

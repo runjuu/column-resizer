@@ -121,6 +121,20 @@ describe('Resizer', () => {
     expect(currentSizes(resizer)).toEqual([100, 10, 200]);
   });
 
+  it('ignores non-finite bar movement offsets', () => {
+    const resizer = new Resizer(
+      sizeResult([
+        sizeInfo(100),
+        sizeInfo(10, { isSolid: true, disableResponsive: true }),
+        sizeInfo(200),
+      ]),
+    );
+
+    expect(() => resizer.moveBar(0, { withOffset: Number.NaN })).not.toThrow();
+    expect(() => resizer.moveBar(0, { withOffset: Number.POSITIVE_INFINITY })).not.toThrow();
+    expect(currentSizes(resizer)).toEqual([100, 10, 200]);
+  });
+
   it('reports resized sections and active bars from a bar action scan result', () => {
     const defaultSizeInfoArray = [
       sizeInfo(100),

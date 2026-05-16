@@ -39,6 +39,26 @@ export class ColumnSection extends ColumnInstance<ColumnSectionConfig> {
     dispatchResizerEvent(this.elm, 'section:size-change', { size: sizeInfo.currentSize });
   }
 
+  getCurrentSize(dimension: 'height' | 'width'): number {
+    const measuredSize = this.elm.getBoundingClientRect()[dimension];
+
+    if (isValidNumber(measuredSize)) {
+      return measuredSize;
+    }
+
+    if (this.sizeInfo) {
+      return this.sizeInfo.currentSize;
+    }
+
+    const configuredSize = this.config.size || this.config.defaultSize;
+
+    if (isValidNumber(configuredSize)) {
+      return configuredSize;
+    }
+
+    return 1;
+  }
+
   private updateStyle() {
     const { flexGrow, flexShrink, flexBasis } = this.getStyle();
     this.elm.style.flexGrow = `${flexGrow}`;
@@ -70,13 +90,14 @@ export class ColumnSection extends ColumnInstance<ColumnSectionConfig> {
 }
 
 function getConfig(item: Pick<ParsedResizerItem, 'elm'>): ColumnSectionConfig {
-  const { size, defaultSize, maxSize, minSize, disableResponsive } = parseItemConfig(item);
+  const config = parseItemConfig(item);
+  const { size, defaultSize, maxSize, minSize } = config;
 
   return {
     size: isValidNumber(size) ? size : undefined,
     defaultSize: isValidNumber(defaultSize) ? defaultSize : undefined,
     maxSize: isValidNumber(maxSize) ? maxSize : undefined,
     minSize: isValidNumber(minSize) ? minSize : undefined,
-    disableResponsive: !!disableResponsive,
+    disableResponsive: 'disableResponsive' in config ? !!config.disableResponsive : undefined,
   };
 }

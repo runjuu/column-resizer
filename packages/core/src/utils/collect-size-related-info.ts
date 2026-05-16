@@ -18,7 +18,8 @@ export function collectSizeRelatedInfo() {
     getResult(): SizeRelatedInfo {
       return {
         sizeInfoArray,
-        flexGrowRatio: responsiveChildCount / responsiveContainerSize,
+        flexGrowRatio:
+          responsiveContainerSize > 0 ? responsiveChildCount / responsiveContainerSize : 0,
       };
     },
   };

@@ -48,6 +48,10 @@ export class Resizer {
       return;
     }
 
+    if (!Number.isFinite(config.withOffset)) {
+      return;
+    }
+
     const barIndex = this.getValidBarIndex(indexOfBar);
 
     if (barIndex === null) {
